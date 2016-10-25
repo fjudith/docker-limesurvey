@@ -1,29 +1,39 @@
 
-FROM tutum/lamp
+FROM php:5-apache
 
-RUN apt-get update ; \
-	apt-get upgrade -q -y ;\
-	apt-get install -q -y curl php5-gd php5-ldap php5-imap; apt-get clean ; \
-	php5enmod imap
+ENV LIMESURVEY_URL=http://download.limesurvey.org/latest-stable-release/limesurvey2.55+161021.tar.gz
 
-RUN rm -rf /app 
-ADD limesurvey.tar.bz2 /
-RUN mv limesurvey app; \
-	mkdir -p /uploadstruct; \
-	chown -R www-data:www-data /app
+RUN apt-get update && \
+    apt-get install -y \
+	   curl \
+       libldap2-dev \
+       php5-gd \
+       php5-ldap \
+       php5-imap
 
-RUN cp -r /app/upload/* /uploadstruct ; \
-	chown -R www-data:www-data /uploadstruct
+RUN	apt-get clean \
+    php5enmod \
+    imap
+
+# Install needed php extensions: ldap
+RUN docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/ && \
+    docker-php-ext-install ldap
+
+# Download and install Limesurvey
+RUN cd /var/www/html \
+    && curl $LIMESURVEY_URL | tar xvz
+
+# Change owner for security reasons
+RUN chown -R www-data:www-data /var/www/html/limesurvey
+
+# Move content to Apache root folder
+RUN cp -r /var/www/html/limuesurvey/* /var/www/html && \
+    chown -R www-data:www-data /var/www/html/limesurvey && \
+    rm -rf /var/www/html/limesurvey
 
 RUN chown www-data:www-data /var/lib/php5
 
-ADD apache_default /etc/apache2/sites-available/000-default.conf
-ADD start.sh /
+VOLUME /var/www/html/upload
 
-RUN chmod +x /start.sh
-
-VOLUME /app/upload
-
-EXPOSE 80 3306
-CMD ["/start.sh"]
-
+EXPOSE 80
+CMD ["apache2-foreground"]
