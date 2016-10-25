@@ -1,13 +1,24 @@
-version: '2'
-services:
-  limesurvey:
-    ports:
-      - "80:80"
-    volumes:
-      - mysql:/var/lib/mysql
-      - upload:/app/upload
-    image:
-      crramirez/limesurvey:latest
-volumes:
-  mysql:
-  upload:
+limesurvey-md:
+  image: mariadb
+  restart: always
+  ports:
+    - "32805:3306"
+  environment:
+    MYSQL_DATABASE: limesurvey
+    MYSQL_ROOT_PASSWORD: V3rY1ns3cur3P4ssw0rd
+    MYSQL_USER: limesurvey
+    MYSQL_PASSWORD: V3rY1ns3cur3P4ssw0rd
+  volumes:
+  - limesurvey-db:/var/lib/mysql
+  - limesurvey-dblog:/var/log/mysql
+  - limeservey-dbetc:/etc/mysql
+
+limesurvey:
+  image: fjudith/limesurvey
+  restart: always
+  ports:
+    - "32705:80"
+  volumes:
+    - limesurvey-upload:/var/www/html/upload
+  links:
+    - limesurvey-md:limesurvey-mariadb
