@@ -1,7 +1,7 @@
 
 FROM php:5-apache
 
-ENV LIMESURVEY_URL=http://download.limesurvey.org/latest-stable-release/limesurvey2.55.3+161111.tar.gz
+ENV LIMESURVEY_URL=http://download.limesurvey.org/latest-stable-release/limesurvey2.56.1+161118.tar.gz
 
 RUN apt-get update && \
     apt-get install -y curl wget bzip2 pwgen
