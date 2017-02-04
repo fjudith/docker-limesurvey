@@ -35,7 +35,7 @@ RUN apt-get install -y libmagickwand-dev && \
     docker-php-ext-enable imagick
 
 # Clean up
-rm -r /var/lib/apt/lists/*
+RUN rm -r /var/lib/apt/lists/*
 
 # Download and install Limesurvey
 RUN cd /var/www/html \
