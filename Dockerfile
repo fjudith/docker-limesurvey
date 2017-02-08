@@ -1,6 +1,9 @@
 
 FROM php:5-apache
 
+MAINTAINER Florian JUDITH <florian.judith.b@gmail.com>
+
+
 ENV LIMESURVEY_URL=http://download.limesurvey.org/latest-stable-release/limesurvey2.62.2+170203.tar.gz
 
 RUN apt-get update && \
