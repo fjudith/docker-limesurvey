@@ -4,10 +4,10 @@ FROM php:5-apache
 MAINTAINER Florian JUDITH <florian.judith.b@gmail.com>
 
 
-ENV LIMESURVEY_URL=http://download.limesurvey.org/latest-stable-release/limesurvey2.62.2+170203.tar.gz
+ENV LIMESURVEY_URL=http://download.limesurvey.org/latest-stable-release/limesurvey2.64.7+170404.tar.gz
 
 RUN apt-get update && \
-    apt-get install -y curl wget bzip2 pwgen
+    apt-get install -y git curl wget bzip2 pwgen
 
 # Install needed php extensions: imagick, ldap, imap, zlib, gd
 RUN apt-get install -y php5-ldap libldap2-dev && \
