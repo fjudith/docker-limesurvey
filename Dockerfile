@@ -1,6 +1,9 @@
 
 FROM php:5-apache
 
+MAINTAINER Florian JUDITH <florian.judith.b@gmail.com>
+
+
 ENV LIMESURVEY_URL=http://download.limesurvey.org/latest-stable-release/limesurvey2.62.2+170203.tar.gz
 
 RUN apt-get update && \
@@ -15,8 +18,8 @@ RUN apt-get install -y php5-imap libssl-dev libc-client2007e-dev libkrb5-dev && 
     docker-php-ext-configure imap --with-imap-ssl --with-kerberos && \
     docker-php-ext-install imap
 
-RUN apt-get install -y libfreetype6-dev libpng12-dev libjpeg62-turbo-dev && \
-    docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ && \
+RUN apt-get install -y libfreetype6-dev libpng12-dev libjpeg62-turbo-dev libzip-dev && \
+    docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ --with-png-dir=/usr/include/ --with-zlib-dir=/usr/include/ --with-zlib && \
     docker-php-ext-install gd
 
 RUN apt-get -y install zlib1g-dev && \
@@ -30,7 +33,7 @@ RUN docker-php-ext-install pdo_mysql
 RUN apt-get -y install re2c libmcrypt-dev && \
     docker-php-ext-install mcrypt
 
-RUN apt-get install -y libmagickwand-dev && \
+RUN apt-get install --fix-missing -y libmagickwand-dev && \
     pecl install imagick && \
     docker-php-ext-enable imagick
 
