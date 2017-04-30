@@ -19,12 +19,11 @@ RUN apt-get install -y php5-imap libssl-dev libc-client2007e-dev libkrb5-dev && 
     docker-php-ext-install imap
 
 RUN apt-get -y install zlib1g-dev && \
-    docker-php-ext-install zip && \
-    apt-get purge --auto-remove -y zlib1g-dev
-
+    docker-php-ext-install zip
+    
 RUN apt-get install -y libfreetype6-dev libpng12-dev libjpeg62-turbo-dev libzip-dev  && \
     docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ --with-png-dir=/usr/include/ --with-zlib-dir=/usr/include/ --with-zlib && \
-    docker-php-ext-install gd
+    docker-php-ext-install gd zlib1g-dev
 
 RUN docker-php-ext-install mysqli
 
