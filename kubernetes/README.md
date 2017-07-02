@@ -265,12 +265,12 @@ http://<node-ip>:<port>/
 
 You should see the familiar LimeSurvey setup page.
 
-![LimeSurvey Setup welcome page](https://github.com/fjudith/docker-limesurvey/raw/master/kubernetes/LimeSurvey_1.png)
-![LimeSurvey Setup license page](https://github.com/fjudith/docker-limesurvey/raw/master/kubernetes/LimeSurvey_2.png)
-![LimeSurvey Setup pre-installation check page](https://github.com/fjudith/docker-limesurvey/raw/master/kubernetes/LimeSurvey_3.png)
-![LimeSurvey Setup database configuration page](https://github.com/fjudith/docker-limesurvey/raw/master/kubernetes/LimeSurvey_4.png)
-![LimeSurvey Setup database creation page](https://github.com/fjudith/docker-limesurvey/raw/master/kubernetes/LimeSurvey_5.png)
-![LimeSurvey Setup optionnal settings page](https://github.com/fjudith/docker-limesurvey/raw/master/kubernetes/LimeSurvey_6.png)
-![LimeSurvey Setup success page](https://github.com/fjudith/docker-limesurvey/raw/master/kubernetes/LimeSurvey_7.png)
-![LimeSurvey Setup login page](https://github.com/fjudith/docker-limesurvey/raw/master/kubernetes/LimeSurvey_8.png)
-![LimeSurvey Setup admin page](https://github.com/fjudith/docker-limesurvey/raw/master/kubernetes/LimeSurvey_9.png)
+![LimeSurvey Setup welcome page](https://github.com/fjudith/docker-limesurvey/raw/master/kubernetes/limesurvey_1.png)
+![LimeSurvey Setup license page](https://github.com/fjudith/docker-limesurvey/raw/master/kubernetes/limesurvey_2.png)
+![LimeSurvey Setup pre-installation check page](https://github.com/fjudith/docker-limesurvey/raw/master/kubernetes/limesurvey_3.png)
+![LimeSurvey Setup database configuration page](https://github.com/fjudith/docker-limesurvey/raw/master/kubernetes/limesurvey_4.png)
+![LimeSurvey Setup database creation page](https://github.com/fjudith/docker-limesurvey/raw/master/kubernetes/limesurvey_5.png)
+![LimeSurvey Setup optionnal settings page](https://github.com/fjudith/docker-limesurvey/raw/master/kubernetes/limesurvey_6.png)
+![LimeSurvey Setup success page](https://github.com/fjudith/docker-limesurvey/raw/master/kubernetes/limesurvey_7.png)
+![LimeSurvey Setup login page](https://github.com/fjudith/docker-limesurvey/raw/master/kubernetes/limesurvey_8.png)
+![LimeSurvey Setup admin page](https://github.com/fjudith/docker-limesurvey/raw/master/kubernetes/limesurvey_9.png)
