@@ -7,7 +7,7 @@ MAINTAINER Florian JUDITH <florian.judith.b@gmail.com>
 ENV LIMESURVEY_URL=http://download.limesurvey.org/latest-stable-release/limesurvey2.67.1+170626.tar.gz
 
 RUN apt-get update && \
-    apt-get install -y git curl wget bzip2 pwgen
+    apt-get install -y git curl wget bzip2 pwgen zip unzip
 
 # Install needed php extensions: imagick, ldap, imap, zlib, gd
 RUN apt-get install -y php5-ldap libldap2-dev && \
@@ -20,10 +20,14 @@ RUN apt-get install -y php5-imap libssl-dev libc-client2007e-dev libkrb5-dev && 
 
 RUN apt-get -y install zlib1g-dev && \
     docker-php-ext-install zip
-    
-RUN apt-get install -y libfreetype6-dev libpng12-dev libjpeg62-turbo-dev libzip-dev  && \
-    docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ --with-png-dir=/usr/include/ --with-zlib-dir=/usr/include/ --with-zlib && \
-    docker-php-ext-install gd zlib1g-dev
+
+# Install bz2 
+RUN apt-get install -y libbz2-dev && \
+    docker-php-ext-install bz2
+
+RUN apt-get install --fix-missing -y libfreetype6-dev libpng12-dev libjpeg62-turbo-dev libzip-dev && \
+    docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ --with-png-dir=/usr/include/  && \
+    docker-php-ext-install gd
 
 RUN docker-php-ext-install mysqli
 
