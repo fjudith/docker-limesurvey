@@ -1,0 +1,65 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: limesurvey-db
+  labels:
+    app: limesurvey
+    tiers: backend
+    type: distributed    
+spec:
+  capacity:
+    storage: 20Gi    
+  accessModes:
+    - ReadWriteMany
+  cephfs:
+    monitors:
+#This only works if you have skyDNS resolveable from the kubernetes node. Otherwise you must manually put in one or more mon pod ips.
+    - ceph-mon.ceph:6789
+    user: admin
+    secretRef:
+      name: ceph-client-key
+status: {}
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: limesurvey-dblog
+  labels:
+    app: limesurvey
+    tiers: backend
+    type: distributed    
+spec:
+  capacity:
+    storage: 20Gi    
+  accessModes:
+    - ReadWriteMany
+  cephfs:
+    monitors:
+#This only works if you have skyDNS resolveable from the kubernetes node. Otherwise you must manually put in one or more mon pod ips.
+    - ceph-mon.ceph:6789
+    user: admin
+    secretRef:
+      name: ceph-client-key
+status: {}
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: limesurvey-upload
+  labels:
+    app: limesurvey
+    tiers: frontend
+    type: distributed    
+spec:
+  capacity:
+    storage: 5Gi  
+  accessModes:
+    - ReadWriteMany
+  cephfs:
+    monitors:
+#This only works if you have skyDNS resolveable from the kubernetes node. Otherwise you must manually put in one or more mon pod ips.
+    - ceph-mon.ceph:6789
+    user: admin
+    secretRef:
+      name: ceph-client-key
+status: {}

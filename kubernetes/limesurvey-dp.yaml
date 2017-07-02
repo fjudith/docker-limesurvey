@@ -1,0 +1,184 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: limesurvey
+    tiers: frontend
+  name: limesurvey
+spec:
+  ports:
+  - name: http-proxy
+    port: 8080
+    targetPort: 8080
+    protocol: TCP
+  selector:
+    app: limesurvey
+    tiers: frontend
+  type: NodePort
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: limesurvey
+    tiers: backend
+  name: limesurvey-md
+spec:
+  ports:
+  - name: mysql
+    port: 3306
+    targetPort: 3306
+    protocol: TCP
+  selector:
+    app: limesurvey
+    tiers: backend
+  type: NodePort
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    app: limesurvey
+  name: limesurvey-upload
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 5Gi
+  selector:
+    matchLabels:
+      app: limesurvey
+      tiers: frontend
+status: {}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    app: limesurvey
+  name: limesurvey-db
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 20Gi
+  selector:
+    matchLabels:
+      app: limesurvey
+      tiers: backend
+status: {}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    app: limesurvey
+  name: limesurvey-dblog
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 20Gi
+  selector:
+    matchLabels:
+      app: limesurvey
+      tiers: backend
+status: {}
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: limesurvey-md
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: limesurvey
+        tiers: backend
+    spec:
+      containers:
+      - image: mariadb
+        name: limesurvey-md
+        env:
+        - name: MYSQL_DATABASE
+          value: limesurvey
+        - name: MYSQL_USER
+          value: limesurvey
+        # $ kubectl create secret generic limesurvey-pass --from-file=root.limesurvey.mariadb.password.txt --from-file=limesurvey.mariadb.password.txt
+        # make sure root.limesurvey.mariadb.password.txt and limesurvey.mariadb.password.txt does not have a trailing newline
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: limesurvey-pass
+              key: root.limesurvey.mariadb.password.txt
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: limesurvey-pass
+              key: limesurvey.mariadb.password.txt
+        ports:
+        - containerPort: 3306
+          name: mysql
+        volumeMounts:
+        - mountPath: /var/lib/mysql
+          name: limesurvey-db
+          subPath: db
+        - mountPath: /var/log/mysql
+          name: limesurvey-dblog
+          subPath: dblog
+      volumes:
+      - name: limesurvey-db
+        persistentVolumeClaim:
+          claimName: limesurvey-db
+      - name: limesurvey-dblog
+        persistentVolumeClaim:
+          claimName: limesurvey-dblog
+status: {}
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: limesurvey
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: limesurvey
+        tiers: frontend
+    spec:
+      containers:
+      - image: fjudith/limesurvey
+        name: limesurvey
+        env: 
+        - name: TERM
+          value: xterm
+        ports:
+        - containerPort: 8080
+          name: http-proxy
+        volumeMounts:
+        - mountPath: /var/www/html/upload
+          name: limesurvey-upload
+          subPath: upload
+        livenessProbe:
+            tcpSocket:
+              port: 8080
+            initialDelaySeconds: 60
+            timeoutSeconds: 5
+        readinessProbe:
+            tcpSocket:
+              port: 8080
+            timeoutSeconds: 5
+      volumes:
+      - name: limesurvey-upload
+        persistentVolumeClaim:
+          claimName: limesurvey-upload
+status: {}
