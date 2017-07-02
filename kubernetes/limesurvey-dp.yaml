@@ -7,7 +7,7 @@ metadata:
   name: limesurvey
 spec:
   ports:
-  - name: http-proxy
+  - name: http
     port: 80
     targetPort: 80
     protocol: TCP
@@ -128,10 +128,10 @@ spec:
         volumeMounts:
         - mountPath: /var/lib/mysql
           name: limesurvey-db
-          subPath: db
+          subPath: limesurvey-db
         - mountPath: /var/log/mysql
           name: limesurvey-dblog
-          subPath: dblog
+          subPath: limesurvey-dblog
       volumes:
       - name: limesurvey-db
         persistentVolumeClaim:
@@ -163,11 +163,11 @@ spec:
           value: xterm
         ports:
         - containerPort: 80
-          name: http-proxy
+          name: http
         volumeMounts:
         - mountPath: /var/www/html/upload
           name: limesurvey-upload
-          subPath: upload
+          subPath: limesurvey-upload
         livenessProbe:
             tcpSocket:
               port: 80
