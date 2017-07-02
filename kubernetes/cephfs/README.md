@@ -157,8 +157,8 @@ kubectl get pods --label=limesurvey
 
 ```
 NAME                             READY     STATUS    RESTARTS   AGE
-limesurvey-3538222740-w9bpc      0/1       Running   0          5m
-limesurvey-md-4200742838-qskfr   1/1       Running   0          1m
+limesurvey-3315793244-bxgk0      1/1       Running   0          1m
+limesurvey-md-4200742838-kq4d4   1/1       Running   0          5m
 ```
 
 Kubernetes logs the stderr and stdout for each pod. Take a look at the logs for a pod by using `kubectl log`. Copy the pod name from the `get pods`command, and then:
@@ -168,67 +168,107 @@ kubectl logs <pod-name>
 ```
 
 ```
-...
-PostgreSQL init process complete; ready for start up.
-
-LOG:  database system was shut down at 2017-04-12 12:14:19 UTC
-LOG:  MultiXact member wraparound protections are now enabled
-LOG:  database system is ready to accept connections
-LOG:  autovacuum launcher started
+2017-07-02 10:15:41 140227039569792 [Note] mysqld (mysqld 10.2.6-MariaDB-10.2.6+maria~jessie) starting as process 1 ...
+2017-07-02 10:15:41 140227039569792 [Note] InnoDB: Mutexes and rw_locks use GCC atomic builtins
+2017-07-02 10:15:41 140227039569792 [Note] InnoDB: Uses event mutexes
+2017-07-02 10:15:41 140227039569792 [Note] InnoDB: Compressed tables use zlib 1.2.8
+2017-07-02 10:15:41 140227039569792 [Note] InnoDB: Using Linux native AIO
+2017-07-02 10:15:41 140227039569792 [Note] InnoDB: Number of pools: 1
+2017-07-02 10:15:41 140227039569792 [Note] InnoDB: Using SSE2 crc32 instructions
+2017-07-02 10:15:41 140227039569792 [Note] InnoDB: Initializing buffer pool, total size = 256M, instances = 1, chunk size = 128M
+2017-07-02 10:15:41 140227039569792 [Note] InnoDB: Completed initialization of buffer pool
+2017-07-02 10:15:41 140226303665920 [Note] InnoDB: If the mysqld execution user is authorized, page cleaner thread priority can be changed. See the man page of setpriority().
+2017-07-02 10:15:41 140227039569792 [Note] InnoDB: Highest supported file format is Barracuda.
+2017-07-02 10:15:41 140227039569792 [Note] InnoDB: 128 out of 128 rollback segments are active.
+2017-07-02 10:15:41 140227039569792 [Note] InnoDB: Creating shared tablespace for temporary tables
+2017-07-02 10:15:41 140227039569792 [Note] InnoDB: Setting file './ibtmp1' size to 12 MB. Physically writing the file full; Please wait ...
+2017-07-02 10:15:41 140227039569792 [Note] InnoDB: File './ibtmp1' size is now 12 MB.
+2017-07-02 10:15:41 140227039569792 [Note] InnoDB: 5.7.14 started; log sequence number 1620154
+2017-07-02 10:15:41 140226152347392 [Note] InnoDB: Loading buffer pool(s) from /var/lib/mysql/ib_buffer_pool
+2017-07-02 10:15:41 140226152347392 [Note] InnoDB: Buffer pool(s) load completed at 170702 10:15:41
+2017-07-02 10:15:41 140227039569792 [Note] Plugin 'FEEDBACK' is disabled.
+2017-07-02 10:15:41 140227039569792 [Note] Server socket created on IP: '::'.
+2017-07-02 10:15:41 140227039569792 [Warning] 'proxies_priv' entry '@% root@limesurvey-md-4200742838-qskfr' ignored in --skip-name-resolve mode.
+2017-07-02 10:15:41 140227039569792 [Note] Reading of all Master_info entries succeded
+2017-07-02 10:15:41 140227039569792 [Note] Added new Master_info '' to hash table
+2017-07-02 10:15:41 140227039569792 [Note] mysqld: ready for connections.
+Version: '10.2.6-MariaDB-10.2.6+maria~jessie'  socket: '/var/run/mysqld/mysqld.sock'  port: 3306  mariadb.org binary distribution
 ```
 
-Also in [alfresco-dp.yaml](https://github.com/fjudith/docker-alfresco/tree/master/kubernetes/alfresco-dp.yaml) we created a service to allow ofther pods to reach this postgres instance. the name is `alfresco-pg` which resolves to the pod IP.
+Also in [limesurvey-dp.yaml](https://github.com/fjudith/docker-limesurvey/tree/master/kubernetes/limesurvey-dp.yaml) we created a service to allow ofther pods to reach this MariaDB instance. the name is `limesurvey-md` which resolves to the pod IP.
 
-Up to this point two Deployment, two Pod, four PVC, two Service, two Endpoint, four PVs, and one Secrets have been created, shown below:
+Up to this point two Deployment, two Pod, three PVC, two Service, two Endpoint, three PVs, and two Secrets have been created, shown below:
 
 ```bash
-kubectl get deployment,pod,svc,endpoints,pvc -l app=alfresco -o wide && \
-  kubectl get secret alfresco-postgres-pass && \
-  kubectl get pv
+kubectl get deployment,pod,svc,endpoints,pvc -l app=limesurvey -o wide && \
+  kubectl get secret limesurvey-pass && \
+  kubectl get pv -l app=limesurvey
 ```
 
 ```
-NAME                 DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE       CONTAINER(S)   IMAGE(S)                  SELECTOR
-deploy/alfresco      1         1         1            0           8m        alfresco       fjudith/alfresco:201704   app=alfresco,tiers=frontend
-deploy/alfresco-pg   1         1         1            0           8m        alfresco-pg    postgres                  app=alfresco,tiers=backend
+NAME                   DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE       CONTAINER(S)    IMAGE(S)             SELECTOR
+deploy/limesurvey      1         1         1            1           22m       limesurvey      fjudith/limesurvey   app=limesurvey,tiers=frontend
+deploy/limesurvey-md   1         1         1            1           22m       limesurvey-md   mariadb              app=limesurvey,tiers=backend
 
-NAME                              READY     STATUS                                       RESTARTS   AGE       IP
-    NODE
-po/alfresco-543271007-ngcgj       0/1       ContainerCreating                            0          8m        <none>
-    192.168.251.205
-po/alfresco-pg-3659509345-z5395   0/1       secrets "alfresco-postgres-pass" not found   0          8m        10.2.64.10   192.168.251.205
+NAME                                READY     STATUS    RESTARTS   AGE       IP           NODE
+po/limesurvey-3315793244-bxgk0      1/1       Running   0          22m       10.2.64.10   192.168.251.205
+po/limesurvey-md-4200742838-kq4d4   1/1       Running   0          22m       10.2.64.9    192.168.251.205
 
-NAME              CLUSTER-IP   EXTERNAL-IP   PORT(S)
-            AGE       SELECTOR
-svc/alfresco      10.3.0.196   <nodes>       137:31977/UDP,138:30871/UDP,139:32703/TCP,21:32474/TCP,445:30952/TCP,8080:30561/TCP   8m        app=alfresco,tiers=frontend
-svc/alfresco-pg   10.3.0.251   <nodes>       5432:30412/TCP            8m        app=alfresco,tiers=backend
+NAME                CLUSTER-IP   EXTERNAL-IP   PORT(S)          AGE       SELECTOR
+svc/limesurvey      10.3.0.225   <nodes>       80:30698/TCP     22m       app=limesurvey,tiers=frontend
+svc/limesurvey-md   10.3.0.214   <nodes>       3306:30477/TCP   22m       app=limesurvey,tiers=backend
 
-NAME             ENDPOINTS   AGE
-ep/alfresco      <none>      8m
-ep/alfresco-pg               8m
+NAME               ENDPOINTS        AGE
+ep/limesurvey      10.2.64.10:80    22m
+ep/limesurvey-md   10.2.64.9:3306   22m
 
-NAME                 STATUS    VOLUME           CAPACITY   ACCESSMODES   STORAGECLASS   AGE
-pvc/alfresco-data    Bound     alfresco-data    20Gi       RWX                          8m
-pvc/alfresco-db      Bound     alfresco-db      20Gi       RWX                          8m
-pvc/alfresco-dblog   Bound     alfresco-dblog   20Gi       RWX                          8m
-pvc/alfresco-log     Bound     alfresco-log     20Gi       RWX                          8m
-NAME                     TYPE      DATA      AGE
-alfresco-postgres-pass   Opaque    1         31s
-NAME             CAPACITY   ACCESSMODES   RECLAIMPOLICY   STATUS    CLAIM                    STORAGECLASS   REASON    AGE
-alfresco-data    20Gi       RWX           Retain          Bound     default/alfresco-data                             8m
-alfresco-db      20Gi       RWX           Retain          Bound     default/alfresco-db                               8m
-alfresco-dblog   20Gi       RWX           Retain          Bound     default/alfresco-dblog                            8m
-alfresco-log     20Gi       RWX           Retain          Bound     default/alfresco-log                              8m            
+NAME                    STATUS    VOLUME              CAPACITY   ACCESSMODES   STORAGECLASS   AGE
+pvc/limesurvey-db       Bound     limesurvey-db       20Gi       RWX                          22m
+pvc/limesurvey-dblog    Bound     limesurvey-dblog    20Gi       RWX                          22m
+pvc/limesurvey-upload   Bound     limesurvey-upload   5Gi        RWX                          22m
+
+NAME              TYPE      DATA      AGE
+limesurvey-pass   Opaque    2         15h
+
+NAME                CAPACITY   ACCESSMODES   RECLAIMPOLICY   STATUS    CLAIM                       STORAGECLASS   REASON    AGE
+limesurvey-db       20Gi       RWX           Retain          Bound     default/limesurvey-db                                16m
+limesurvey-dblog    20Gi       RWX           Retain          Bound     default/limesurvey-dblog                             16m
+limesurvey-upload   5Gi        RWX           Retain          Bound     default/limesurvey-upload                            16m        
 ```
 
-# Visit your new Alfresco
+# Find the external IP
 
-Now, we can visit running Waarp-R66 app. Use the node IP running the alfresco pod and the port mapped to `8080/TCP` you obtained above.
+The LimeSurvey service has the setting `type: NodePort`. This will set up the Limesurvey behind its node external IP.
+Find the Node IP and Port for your LimeSurvey service.
+
+```bash
+kubectl get pod,svc -l app=limesurvey -l tiers=frontend -o wide
+```
 
 ```
-http://<node-ip>:<port>/share
+NAME                             READY     STATUS    RESTARTS   AGE       IP           NODE
+po/limesurvey-3315793244-bxgk0   1/1       Running   0          54m       10.2.64.10   192.168.251.205
+
+NAME             CLUSTER-IP   EXTERNAL-IP   PORT(S)        AGE       SELECTOR
+svc/limesurvey   10.3.0.225   <nodes>       80:30698/TCP   54m       app=limesurvey,tiers=frontend
 ```
 
-You should see the familiar Alfresco login page.
+# Visit your new LimeSurvey
 
-![Waarp-R66 login page](https://github.com/fjudith/docker-alfresco/raw/201704/kubernetes/Alfresco.png)
+Now, we can visit running LimeSurvey app. Use the node IP running the limesurvey pod and the port mapped to `80/TCP` you obtained above.
+
+```
+http://<node-ip>:<port>/
+```
+
+You should see the familiar LimeSurvey setup page.
+
+![LimeSurvey Setup welcome page](https://github.com/fjudith/docker-limesurvey/raw/master/kubernetes/LimeSurvey_1.png)
+![LimeSurvey Setup license page](https://github.com/fjudith/docker-limesurvey/raw/master/kubernetes/LimeSurvey_2.png)
+![LimeSurvey Setup pre-installation check page](https://github.com/fjudith/docker-limesurvey/raw/master/kubernetes/LimeSurvey_3.png)
+![LimeSurvey Setup database configuration page](https://github.com/fjudith/docker-limesurvey/raw/master/kubernetes/LimeSurvey_4.png)
+![LimeSurvey Setup database creation page](https://github.com/fjudith/docker-limesurvey/raw/master/kubernetes/LimeSurvey_5.png)
+![LimeSurvey Setup optionnal settings page](https://github.com/fjudith/docker-limesurvey/raw/master/kubernetes/LimeSurvey_6.png)
+![LimeSurvey Setup success page](https://github.com/fjudith/docker-limesurvey/raw/master/kubernetes/LimeSurvey_7.png)
+![LimeSurvey Setup login page](https://github.com/fjudith/docker-limesurvey/raw/master/kubernetes/LimeSurvey_8.png)
+![LimeSurvey Setup admin page](https://github.com/fjudith/docker-limesurvey/raw/master/kubernetes/LimeSurvey_9.png)

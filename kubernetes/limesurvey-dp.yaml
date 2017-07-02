@@ -8,8 +8,8 @@ metadata:
 spec:
   ports:
   - name: http-proxy
-    port: 8080
-    targetPort: 8080
+    port: 80
+    targetPort: 80
     protocol: TCP
   selector:
     app: limesurvey
@@ -162,7 +162,7 @@ spec:
         - name: TERM
           value: xterm
         ports:
-        - containerPort: 8080
+        - containerPort: 80
           name: http-proxy
         volumeMounts:
         - mountPath: /var/www/html/upload
@@ -170,12 +170,12 @@ spec:
           subPath: upload
         livenessProbe:
             tcpSocket:
-              port: 8080
+              port: 80
             initialDelaySeconds: 60
             timeoutSeconds: 5
         readinessProbe:
             tcpSocket:
-              port: 8080
+              port: 80
             timeoutSeconds: 5
       volumes:
       - name: limesurvey-upload
