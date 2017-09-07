@@ -83,8 +83,7 @@ RUN cp -rp /var/www/html/limesurvey/* /var/www/html && \
     chown -R www-data:www-data /var/www/html/limesurvey && \
     rm -rf /var/www/html/limesurvey
 
-RUN chown www-data:www-data /var/lib/php5 && \
-    chown www-data:adm /docker-entrypoint.sh
+RUN chown www-data:www-data /var/lib/php5
 
 # Copy docker-entrypoint
 COPY docker-entrypoint.sh /
