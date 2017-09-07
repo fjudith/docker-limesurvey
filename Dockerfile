@@ -1,5 +1,5 @@
 
-FROM php:5-apache
+FROM php:5.6-apache
 
 MAINTAINER Florian JUDITH <florian.judith.b@gmail.com>
 
@@ -7,7 +7,17 @@ MAINTAINER Florian JUDITH <florian.judith.b@gmail.com>
 ENV LIMESURVEY_URL=http://download.limesurvey.org/latest-stable-release/limesurvey2.67.1+170626.tar.gz
 
 RUN apt-get update && \
-    apt-get install -y git curl wget bzip2 pwgen zip unzip
+    apt-get install -y \
+    git \
+    curl \
+    wget \
+    bzip2 \
+    pwgen \
+    zip \
+    unzip \
+    sendmail \
+    sendmail-bin \
+    mailutils
 
 # Install needed php extensions: imagick, ldap, imap, zlib, gd
 RUN apt-get install -y php5-ldap libldap2-dev && \
@@ -41,7 +51,8 @@ RUN apt-get install --fix-missing -y libmagickwand-dev && \
     docker-php-ext-enable imagick
 
 # Clean up
-RUN rm -r /var/lib/apt/lists/*
+RUN apt-get clean &&
+    rm -r /var/lib/apt/lists/*
 
 # Download and install Limesurvey
 RUN cd /var/www/html \
