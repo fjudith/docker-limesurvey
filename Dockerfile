@@ -8,6 +8,7 @@ ENV LIMESURVEY_URL=http://download.limesurvey.org/latest-stable-release/limesurv
 
 COPY asset/php.ini /usr/local/etc/php/
 COPY docker-entrypoint.sh /
+RUN chmod +x /docker-entrypoint.sh
 
 RUN apt-get update && \
     apt-get install -y \
