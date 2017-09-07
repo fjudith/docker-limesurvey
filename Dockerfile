@@ -92,6 +92,5 @@ VOLUME /var/www/html/upload
 EXPOSE 80
 
 
-ENTRYPOINT /docker-entrypoint.sh
-
+ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["apache2-foreground"]
