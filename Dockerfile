@@ -15,9 +15,7 @@ RUN apt-get update && \
     pwgen \
     zip \
     unzip \
-    sendmail \
-    sendmail-bin \
-    mailutils
+    php-net-smtp
 
 # Install needed php extensions: imagick, ldap, imap, zlib, gd
 RUN apt-get install -y php5-ldap libldap2-dev && \
