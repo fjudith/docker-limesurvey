@@ -39,4 +39,4 @@ timeout ${SMTP_TIMEOUT}
 EOL
 
 # Start Aphache
-apache2-foreground
+exec "$@"

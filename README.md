@@ -18,6 +18,11 @@ The Dockerfile buils from "php:5-apache (see https://hub.docker.com/_/php/)
 
 **This image does not leverage embedded database**
 
+## Roadmap
+
+* [x] Support SMTP environment variables for email notifications
+* [ ] Implement external url environment variable to fix email template URL.  
+
 ## Quick Start
 
 Run a supported database container with persistent storage (i.e. MySQL, MariaDB, PostgreSQL).
