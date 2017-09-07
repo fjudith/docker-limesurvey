@@ -4,7 +4,7 @@ FROM php:5.6-apache
 MAINTAINER Florian JUDITH <florian.judith.b@gmail.com>
 
 
-ENV LIMESURVEY_URL=http://download.limesurvey.org/latest-stable-release/limesurvey2.67.1+170626.tar.gz
+ENV LIMESURVEY_URL=http://download.limesurvey.org/latest-stable-release/limesurvey2.67.3+170728.tar.gz
 
 RUN apt-get update && \
     apt-get install -y \
