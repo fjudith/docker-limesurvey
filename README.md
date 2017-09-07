@@ -101,3 +101,4 @@ docker-compose up -d
 # References
 
 * https://www.limesurvey.org/
+* http://msmtp.sourceforge.net/doc/msmtp.html
