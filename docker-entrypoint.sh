@@ -41,7 +41,7 @@ timeout ${SMTP_TIMEOUT}
 EOL
 
 # Write Public URL
-if [ -v "$PUBLIC_URL" ];
+if [ -v "$PUBLIC_URL" ]; then
     sed -i "s#\('debug'=>0,\)\$#\\1 'publicurl'=>'${PUBLIC_URL}',#g" application/config/config.php
 fi
 
