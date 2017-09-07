@@ -40,7 +40,7 @@ timeout ${SMTP_TIMEOUT}
 EOL
 
 # Write Public URL
-if if [ -z "$PUBLIC_URL" ];
+if [ -z "$PUBLIC_URL" ];
 
 fi
 
