@@ -19,6 +19,7 @@ MAIL_DOMAIN=${MAIL_DOMAIN:-}
 SMTP_TIMEOUT=${SMTP_TIMEOUT:-30000}
 MAIL_SMTP_DEBUG=${MAIL_SMTP_DEBUG:-false}
 
+# Write MSMTP configuration
 cat > /etc/msmtprc << EOL
 account default
 host ${SMTP_HOST}
@@ -36,3 +37,6 @@ maildomain ${MAIL_TRUST_DOMAIN}
 domain ${MAIL_DOMAIN}
 timeout ${SMTP_TIMEOUT}
 EOL
+
+# Start Aphache
+apache2-foreground
