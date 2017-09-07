@@ -19,6 +19,7 @@ MAIL_DOMAIN=${MAIL_DOMAIN:-}
 SMTP_TIMEOUT=${SMTP_TIMEOUT:-30000}
 MAIL_SMTP_DEBUG=${MAIL_SMTP_DEBUG:-false}
 
+PUBLIC_URL=${PUBLIC_URL:-}
 # Write MSMTP configuration
 cat > /etc/msmtprc << EOL
 account default
@@ -37,6 +38,11 @@ maildomain ${MAIL_TRUST_DOMAIN}
 domain ${MAIL_DOMAIN}
 timeout ${SMTP_TIMEOUT}
 EOL
+
+# Write Public URL
+if if [ -z "$PUBLIC_URL" ];
+
+fi
 
 # Start Aphache
 exec "$@"
