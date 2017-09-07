@@ -51,7 +51,7 @@ RUN apt-get install --fix-missing -y libmagickwand-dev && \
     docker-php-ext-enable imagick
 
 # Clean up
-RUN apt-get clean &&
+RUN apt-get clean && \
     rm -r /var/lib/apt/lists/*
 
 # Download and install Limesurvey
