@@ -64,7 +64,7 @@ RUN touch /etc/msmtprc && \
     rm /etc/logrotate.d/msmtp && \
     echo "/var/log/msmtp/*.log {\n rotate 12\n monthly\n compress\n missingok\n notifempty\n }" > /etc/logrotate.d/msmtp && \
     crudini --set /etc/php5/cli/php.ini "mail function" "sendmail_path" "'/usr/bin/msmtp'" && \
-    crudini --set /usr/local/etc/php/php.ini "mail function" "sendmail_path" "'/usr/bin/msmtp'" && \
+    crudini --set /usr/local/etc/php/php.ini "mail function" "sendmail_path" "'/usr/bin/msmtp'"
 
 # Clean up
 RUN apt-get clean && \
