@@ -20,6 +20,7 @@ SMTP_TIMEOUT=${SMTP_TIMEOUT:-30000}
 MAIL_SMTP_DEBUG=${MAIL_SMTP_DEBUG:-false}
 
 PUBLIC_URL=${PUBLIC_URL:-}
+
 # Write MSMTP configuration
 cat > /etc/msmtprc << EOL
 account default
@@ -40,7 +41,7 @@ timeout ${SMTP_TIMEOUT}
 EOL
 
 # Write Public URL
-if [ -z "$PUBLIC_URL" ];
+if [ -v "$PUBLIC_URL" ];
     sed -i "s#\('debug'=>0,\)\$#\\1 'publicurl'=>'${PUBLIC_URL}',#g" application/config/config.php
 fi
 
