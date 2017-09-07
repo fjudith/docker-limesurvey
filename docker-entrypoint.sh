@@ -41,7 +41,7 @@ EOL
 
 # Write Public URL
 if [ -z "$PUBLIC_URL" ];
-
+    sed -i "s#\('debug'=>0,\)\$#\\1 'publicurl'=>'${PUBLIC_URL}',#g" application/config/config.php
 fi
 
 # Start Aphache
