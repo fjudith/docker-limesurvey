@@ -6,12 +6,9 @@ MAINTAINER Florian JUDITH <florian.judith.b@gmail.com>
 
 ENV LIMESURVEY_URL=http://download.limesurvey.org/latest-stable-release/limesurvey2.67.3+170728.tar.gz
 
-COPY asset/php.ini /usr/local/etc/php/
-COPY docker-entrypoint.sh /
-RUN chmod +x /docker-entrypoint.sh
-
 RUN apt-get update && \
     apt-get install -y \
+    crudini \
     git \
     curl \
     wget \
@@ -66,7 +63,8 @@ RUN touch /etc/msmtprc && \
     touch /etc/logrotate.d/msmtp && \
     rm /etc/logrotate.d/msmtp && \
     echo "/var/log/msmtp/*.log {\n rotate 12\n monthly\n compress\n missingok\n notifempty\n }" > /etc/logrotate.d/msmtp && \
-    sed -i 's/;sendmail_path\s=.*/sendmail_path = \/usr\/bin\/msmtp -t/' /etc/php5/cli/php.ini
+    crudini --set /etc/php5/cli/php.ini "mail function" "sendmail_path" "'/usr/bin/msmtp'" && \
+    crudini --set /usr/local/etc/php/php.ini "mail function" "sendmail_path" "'/usr/bin/msmtp'" && \
 
 # Clean up
 RUN apt-get clean && \
@@ -86,6 +84,10 @@ RUN cp -rp /var/www/html/limesurvey/* /var/www/html && \
 
 RUN chown www-data:www-data /var/lib/php5 && \
     chown www-data:adm /docker-entrypoint.sh
+
+# Copy docker-entrypoint
+COPY docker-entrypoint.sh /
+RUN chmod +x /docker-entrypoint.sh
 
 VOLUME /var/www/html/upload
 
