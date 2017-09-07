@@ -61,7 +61,8 @@ RUN touch /etc/msmtprc && \
     chown -R www-data:adm /var/log/msmtp && \
     touch /etc/logrotate.d/msmtp && \
     rm /etc/logrotate.d/msmtp && \
-    echo "/var/log/msmtp/*.log {\n rotate 12\n monthly\n compress\n missingok\n notifempty\n }" > /etc/logrotate.d/msmtp
+    echo "/var/log/msmtp/*.log {\n rotate 12\n monthly\n compress\n missingok\n notifempty\n }" > /etc/logrotate.d/msmtp && \
+    sed -i 's/;sendmail_path\s=.*/sendmail_path = \/usr\/bin\/msmtp -t/' /etc/php5/cli/php.ini
 
 COPY asset/php.ini /usr/local/etc/php/
 
