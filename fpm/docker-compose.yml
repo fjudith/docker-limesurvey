@@ -1,0 +1,41 @@
+limesurvey-md:
+  image: mariadb
+  restart: always
+  ports:
+    - "32805:3306"
+  environment:
+    MYSQL_DATABASE: limesurvey
+    MYSQL_ROOT_PASSWORD: V3rY1ns3cur3P4ssw0rd
+    MYSQL_USER: limesurvey
+    MYSQL_PASSWORD: V3rY1ns3cur3P4ssw0rd
+  volumes:
+  - limesurvey-db:/var/lib/mysql
+  - limesurvey-dblog:/var/log/mysql
+  - limeservey-dbetc:/etc/mysql
+
+limesurvey-mc:
+  image: memcached
+
+limesurvey:
+  image: fjudith/limesurvey
+  restart: always
+  ports:
+    - "32705:80"
+  volumes:
+    - limesurvey-upload:/var/www/html/upload
+  links:
+    - limesurvey-md:mariadb
+    - limesruvey-pc:memcached
+
+limesurvey-nginx:
+  image: nginx
+  ports:
+  - 32716:443/tcp
+  - 32715:80/tcp
+  links:
+  - limesurvey-mc:memcached
+  - limesurvey:limesurvey
+  volumes:
+  - wordpress-data:/var/www/html:ro
+  - wordpress-nginx-config:/etc/nginx
+  - wordpress-nginx-log:/var/log/nginx
