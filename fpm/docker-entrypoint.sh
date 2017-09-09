@@ -72,6 +72,8 @@ if [[ -v MYSQL_ENV_GOSU_VERSION ]]; then
     else
         echo 'Database already initialized'
         DB_INITIALIZED=true
+
+        cp application/config/config-sample-mysql.php application/config/config.php
     fi
 
     if [ -z "$DB_PASSWORD" ]; then
@@ -81,8 +83,6 @@ if [[ -v MYSQL_ENV_GOSU_VERSION ]]; then
         echo >&2 '  (Also of interest might be DB_USERNAME and DB_NAME.)'
         exit 1
     fi
-
-    cp application/config/config-sample-mysql.php application/config/config.php
 fi
 
 # if we're linked to PostgreSQL and thus have credentials already, let's use them
@@ -103,6 +103,8 @@ if [[ -v POSTGRES_ENV_GOSU_VERSION ]]; then
     else
         echo 'Database already initialized'
         DB_INITIALIZED=true
+
+        cp application/config/config-sample-pgsql.php application/config/config.php
     fi
 
     if [ -z "$DB_PASSWORD" ]; then
@@ -112,10 +114,9 @@ if [[ -v POSTGRES_ENV_GOSU_VERSION ]]; then
         echo >&2 '  (Also of interest might be DB_USERNAME and DB_NAME.)'
         exit 1
     fi
-
-    cp application/config/config-sample-pgsql.php application/config/config.php
 fi
 
+# Write Database config
 if [ $DB_INITIALIZED == true ]; then
     sed -i "s#\('connectionString' => \).*,\$#\\1'${DB_TYPE}:host=${DB_HOST};port=${DB_PORT};dbname=${DB_NAME};',#g" application/config/config.php
     sed -i "s#\('username' => \).*,\$#\\1'${DB_USERNAME}',#g" application/config/config.php
@@ -125,15 +126,17 @@ if [ $DB_INITIALIZED == true ]; then
 fi 
 
 # Write UrlManager config
-sed -i "s#\('urlFormat' => \).*,\$#\\1'${URL_FORMAT}',#g" application/config/config.php
+if [-f application/config/config.php ]; then
+    sed -i "s#\('urlFormat' => \).*,\$#\\1'${URL_FORMAT}',#g" application/config/config.php
+fi
 
 # Write Public URL
-if [ "$PUBLIC_URL" ]; then
+if [ "$PUBLIC_URL" ] && [-f application/config/config.php ]; then
     sed -i "s#\('debug'=>0,\)\$#'publicurl'=>'${PUBLIC_URL}',\n\t\t\\1 #g" application/config/config.php
 fi
 
 # Write Memcached config
-if [ "$MEMCACHE_HOST" ]; then
+if [ "$MEMCACHE_HOST" ] && [-f application/config/config.php ]; then
     sed -i "s#\('db' => array(\)#'cache'=>array(\n\t\t\t'class'=>'CMemCache',\n\t\t\t'servers'=>array(\n\t\t\t\tarray(\n\t\t\t\t\t'host'=>'${MEMCACHE_HOST}',\n\t\t\t\t\t'port'=>'${MEMCACHE_PORT}',\n\t\t\t\t\t'weight'=>'${MEMCACHE_WEIGHT}',\n\t\t\t\t),\n\t\t\t),\n\t\t),\n\t\t\\1 #g" application/config/config.php
 fi
 
