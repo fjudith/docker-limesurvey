@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e pipefail 
+set -e
 
 SMTP_HOST=${SMTP_HOST:-'localhost'}
 SMTP_PORT=${SMTP_PORT:-'25'}

@@ -54,7 +54,7 @@ docker run --name='limesurvey' -d \
 --restart=always \
 -p 32701:80 \
 -v limesurvey-upload:/var/www/html/upload \
---links limesurvey-md:mariadb \
+--link limesurvey-md:mysql \
 fjudith/limesruvey
 ```
 
