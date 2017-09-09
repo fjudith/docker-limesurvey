@@ -5,18 +5,16 @@ MAINTAINER Florian JUDITH <florian.judith.b@gmail.com>
 ENV LIMESURVEY_URL=http://download.limesurvey.org/latest-stable-release/limesurvey2.67.3+170728.tar.gz
 
 RUN apt-get update && \
-    apt-get install -y \
+    apt-get install -y --no-install-recommends \
     crudini \
     postgresql-client \
     mysql-client \
     git \
-    curl \
     wget \
     bzip2 \
     pwgen \
     zip \
     unzip \
-    ca-certificates \
     msmtp \
     php-net-smtp
 
