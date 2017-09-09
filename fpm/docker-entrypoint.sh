@@ -1,6 +1,24 @@
 #!/bin/bash
 set -e 
 
+function cfg_replace_option {
+  grep "$1" "$3" > /dev/null
+  if [ $? -eq 0 ]; then
+    # replace option
+    echo "replacing option  $1=$2  in  $3"
+    sed -i "s#^\($1\s*=\s*\).*\$#\1$2#" $3
+    if (( $? )); then
+      echo "cfg_replace_option failed"
+      exit 1
+    fi
+  else
+    # add option if it does not exist
+    echo "adding option  $1=$2  in  $3"
+    echo "$1=$2" >> $3
+  fi
+}
+
+
 SMTP_HOST=${SMTP_HOST:-localhost}
 SMTP_PORT=${SMTP_PORT:-25}
 SMTP_PROTOCOL=${MAIL_PROTOCOL:-smtp}

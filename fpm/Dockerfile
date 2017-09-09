@@ -26,7 +26,7 @@ RUN apt-get install -y libz-dev && \
     curl -o zip.tgz -SL http://pecl.php.net/get/zip-1.13.5.tgz && \
     tar -xf zip.tgz -C /usr/src/php/ext/ && \
     rm zip.tgz && \
-    mv /usr/src/php/ext/zip-1.13.5 /usr/src/php/ext/zip
+    mv /usr/src/php/ext/zip-1.13.5 /usr/src/php/ext/zip && \
     docker-php-ext-install zip
 
 # Install needed php extensions: memcached
@@ -113,7 +113,6 @@ RUN chmod +x /docker-entrypoint.sh
 VOLUME /var/www/html/upload
 
 EXPOSE 80
-
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["apache2-foreground"]
