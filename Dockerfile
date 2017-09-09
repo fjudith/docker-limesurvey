@@ -1,4 +1,4 @@
-FROM php:5.6
+FROM php:5.6-apache
 
 MAINTAINER Florian JUDITH <florian.judith.b@gmail.com>
 
