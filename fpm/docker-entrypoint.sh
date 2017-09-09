@@ -1,23 +1,6 @@
 #!/bin/bash
 set -e 
 
-function cfg_replace_option {
-  grep "$1" "$3" > /dev/null
-  if [ $? -eq 0 ]; then
-    # replace option
-    echo "replacing option  $1=$2  in  $3"
-    sed -i "s#^\($1\s*=\s*\).*\$#\1$2#" $3
-    if (( $? )); then
-      echo "cfg_replace_option failed"
-      exit 1
-    fi
-  else
-    # add option if it does not exist
-    echo "adding option  $1=$2  in  $3"
-    echo "$1=$2" >> $3
-  fi
-}
-
 SMTP_HOST=${SMTP_HOST:-'localhost'}
 SMTP_PORT=${SMTP_PORT:-'25'}
 SMTP_PROTOCOL=${MAIL_PROTOCOL:-'smtp'}
@@ -42,13 +25,15 @@ DB_HOST=${DB_HOST:-'mysql'}
 DB_PORT=${DB_PORT:-'3306'}
 DB_NAME=${DB_NAME:-'limesurvey'}
 DB_CHARSET=${DB_CHARSET:-'utf8mb4'}
-DB_TABLE_PREFIX=${$DB_TABLE_PREFIX:-'lime_'}
+DB_TABLE_PREFIX=${DB_TABLE_PREFIX:-'lime_'}
 DB_USERNAME=${DB_USERNAME:-}
 DB_PASSWORD=${DB_PASSWORD:-}
 
 MEMCACHED_HOST=${MEMCACHED_HOST:-}
-MEMCACHED_PORT=${MEMCACHED_PORT:-11211}
-MEMCACHED_WEIGHT${MEMCACHED_PORT:-100}
+MEMCACHED_PORT=${MEMCACHED_PORT:-'11211'}
+MEMCACHED_WEIGHT=${MEMCACHED_PORT:-'100'}
+
+URL_FORMAT=${URL_FORMAT:-'path'}
 
 # Write MSMTP configuration
 cat > /etc/msmtprc << EOL
@@ -68,6 +53,16 @@ maildomain ${MAIL_TRUST_DOMAIN}
 domain ${MAIL_DOMAIN}
 timeout ${SMTP_TIMEOUT}
 EOL
+
+# Write Database config
+sed -i "s#\('connectionString' => \).*,\$#\\1'${DB_KIND}:host=${DB_HOST};port=${DB_PORT};dbname=${DB_NAME};',#g" application/config/config.php
+sed -i "s#\('username' => \).*,\$#\\1'${DB_USERNAME}',#g" application/config/config.php
+sed -i "s#\('password' => \).*,\$#\\1'${DB_PASSWORD}',#g" application/config/config.php
+sed -i "s#\('charset' => \).*,\$#\\1'${DB_CHARSET}',#g" application/config/config.php
+sed -i "s#\('tablePrefix' => \).*,\$#\\1'${DB_TABLE_PREFIX}',#g" application/config/config.php
+
+# Write UrlManager config
+sed -i "s#\('urlFormat' => \).*,\$#\\1'${URL_FORMAT}',#g" application/config/config.php
 
 # Write Public URL
 if [ "$PUBLIC_URL" ]; then
