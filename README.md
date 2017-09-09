@@ -21,9 +21,10 @@ The Dockerfile buils from "php:5-apache (see https://hub.docker.com/_/php/)
 
 ## Roadmap
 
-* [x] Support SMTP environment variables for email notifications
-* [x] Support Memcached (nginx/fpm only)
-* [ ] Implement external url environment variable to fix email template URL.  
+* [x] SMTP environment variables for email notifications
+* [x] External url for email email notifications
+* [x] Memcached via container link
+* [x] MySQL or PostgreSQL autoconf via container link
 
 ## Quick Start
 
