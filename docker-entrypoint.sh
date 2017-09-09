@@ -28,9 +28,9 @@ DB_TABLE_PREFIX=${DB_TABLE_PREFIX:-'lime_'}
 DB_USERNAME=${DB_USERNAME:-}
 DB_PASSWORD=${DB_PASSWORD:-}
 
-MEMCACHED_HOST=${MEMCACHED_HOST:-}
-MEMCACHED_PORT=${MEMCACHED_PORT:-'11211'}
-MEMCACHED_WEIGHT=${MEMCACHED_PORT:-'100'}
+MEMCACHE_HOST=${MEMCACHE_HOST:-}
+MEMCACHE_PORT=${MEMCACHE_PORT:-'11211'}
+MEMCACHE_WEIGHT=${MEMCACHE_PORT:-'100'}
 
 URL_FORMAT=${URL_FORMAT:-'path'}
 
@@ -113,8 +113,8 @@ if [ "$PUBLIC_URL" ]; then
 fi
 
 # Write Memcached config
-if [ "$MEMCACHED_HOST" ]; then
-    sed -i "s#\('db' => array(\)#'cache'=>array(\n\t\t\t'class'=>'CMemCache',\n\t\t\t'servers'=>array(\n\t\t\t\tarray(\n\t\t\t\t\t'host'=>'${MEMCACHED_HOST}',\n\t\t\t\t\t'port'=>'${MEMCACHED_PORT}',\n\t\t\t\t\t'weight'=>'${MEMCACHED_WEIGHT}',\n\t\t\t\t),\n\t\t\t),\n\t\t),\n\t\t\\1 #g" application/config/config.php
+if [ "$MEMCACHE_HOST" ]; then
+    sed -i "s#\('db' => array(\)#'cache'=>array(\n\t\t\t'class'=>'CMemCache',\n\t\t\t'servers'=>array(\n\t\t\t\tarray(\n\t\t\t\t\t'host'=>'${MEMCACHE_HOST}',\n\t\t\t\t\t'port'=>'${MEMCACHE_PORT}',\n\t\t\t\t\t'weight'=>'${MEMCACHE_WEIGHT}',\n\t\t\t\t),\n\t\t\t),\n\t\t),\n\t\t\\1 #g" application/config/config.php
 fi
 
 # Start Aphache
