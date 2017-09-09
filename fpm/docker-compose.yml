@@ -36,6 +36,6 @@ limesurvey-nginx:
   - limesurvey-mc:memcached
   - limesurvey:limesurvey
   volumes:
-  - wordpress-data:/var/www/html:ro
-  - wordpress-nginx-config:/etc/nginx
-  - wordpress-nginx-log:/var/log/nginx
+  - limesurvey-data:/var/www/html:ro
+  - limesurvey-nginx-config:/etc/nginx
+  - limesurvey-nginx-log:/var/log/nginx
