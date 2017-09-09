@@ -1,8 +1,6 @@
-
-FROM php:5.6-apache
+FROM php:5.6
 
 MAINTAINER Florian JUDITH <florian.judith.b@gmail.com>
-
 
 ENV LIMESURVEY_URL=http://download.limesurvey.org/latest-stable-release/limesurvey2.67.3+170728.tar.gz
 
@@ -20,6 +18,32 @@ RUN apt-get update && \
     msmtp \
     php-net-smtp
 
+RUN mkdir -p /usr/src/php/ext
+
+# Install needed php extensions: zip
+RUN apt-get install -y libz-dev && \
+    curl -o zip.tgz -SL http://pecl.php.net/get/zip-1.13.5.tgz && \
+    tar -xf zip.tgz -C /usr/src/php/ext/ && \
+    rm zip.tgz && \
+    mv /usr/src/php/ext/zip-1.13.5 /usr/src/php/ext/zip && \
+    docker-php-ext-install zip
+
+# Install needed php extensions: memcached
+RUN apt-get install -y libmemcached-dev && \
+    curl -o memcached.tgz -SL http://pecl.php.net/get/memcached-2.2.0.tgz && \
+    tar -xf memcached.tgz -C /usr/src/php/ext/ && \
+    echo extension=memcached.so >> /usr/local/etc/php/conf.d/memcached.ini && \
+    rm memcached.tgz && \
+    mv /usr/src/php/ext/memcached-2.2.0 /usr/src/php/ext/memcached && \
+    docker-php-ext-install memcached
+
+# Install needed php extensions: memcache
+RUN curl -o memcache.tgz -SL http://pecl.php.net/get/memcache-3.0.8.tgz && \
+    tar -xf memcache.tgz -C /usr/src/php/ext/ && \
+    rm memcache.tgz && \
+    mv /usr/src/php/ext/memcache-3.0.8 /usr/src/php/ext/memcache && \
+    docker-php-ext-install memcache
+
 # Install needed php extensions: ldap
 RUN apt-get install -y php5-ldap libldap2-dev && \
     docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/ && \
@@ -29,10 +53,6 @@ RUN apt-get install -y php5-ldap libldap2-dev && \
 RUN apt-get install -y php5-imap libssl-dev libc-client2007e-dev libkrb5-dev && \
     docker-php-ext-configure imap --with-imap-ssl --with-kerberos && \
     docker-php-ext-install imap
-
-# Install needed php extensions: zip
-RUN apt-get -y install zlib1g-dev && \
-    docker-php-ext-install zip
 
 # Install needed php extensions: bz2 
 RUN apt-get install -y libbz2-dev && \
@@ -92,7 +112,6 @@ RUN chmod +x /docker-entrypoint.sh
 VOLUME /var/www/html/upload
 
 EXPOSE 80
-
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["apache2-foreground"]
