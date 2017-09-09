@@ -66,11 +66,12 @@ if [[ -v MYSQL_ENV_GOSU_VERSION ]]; then
     : ${DB_CHARSET=${DB_CHARSET:-'utf8mb4'}}
     
     echo 'Using MySQL'
-    if ! mysql -h mysql -u $DB_USERNAME -p$DB_PASSWORD $DB_NAME -e "SELECT 1 FROM information_schema.tables WHERE table_schema = '${DB_NAME}' AND table_name LIKE '${DB_TABLE_PREFIX}_%';" | grep 1 ; then
-        echo 'Initializing MySQL database'
-        #mysql -h mysql -u $DB_USERNAME -p$DB_PASSWORD $DB_NAME < installer/sql/create-mysql.sql
+    if ! mysql -h mysql -u $DB_USERNAME -p$DB_PASSWORD $DB_NAME -e "SELECT 1,table_schema,table_name FROM information_schema.tables WHERE table_schema = '${DB_NAME}' AND table_name LIKE '${DB_TABLE_PREFIX}_%';" | grep 1 ; then
+        echo 'Database not initialized'
+        DB_INITIALIZED=false
     else
         echo 'Database already initialized'
+        DB_INITIALIZED=true
     fi
 
     if [ -z "$DB_PASSWORD" ]; then
@@ -97,10 +98,11 @@ if [[ -v POSTGRES_ENV_GOSU_VERSION ]]; then
 
     echo 'Using PostgreSQL'
     if ! psql postgresql://$DB_USERNAME:$DB_PASSWORD@postgres/$DB_NAME -c "SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name LIKE '${DB_TABLE_PREFIX}_%';" | grep 1 ; then
-        echo 'Initializing PostgreSQL database'
-        #psql postgresql://$DB_USERNAME:$DB_PASSWORD@postgres/$DB_NAME -f installer/sql/create-pgsql.sql
+        echo 'Database not initialized'
+        DB_INITIALIZED=false
     else
         echo 'Database already initialized'
+        DB_INITIALIZED=true
     fi
 
     if [ -z "$DB_PASSWORD" ]; then
@@ -114,11 +116,13 @@ if [[ -v POSTGRES_ENV_GOSU_VERSION ]]; then
     cp application/config/config-sample-pgsql.php application/config/config.php
 fi
 
-sed -i "s#\('connectionString' => \).*,\$#\\1'${DB_TYPE}:host=${DB_HOST};port=${DB_PORT};dbname=${DB_NAME};',#g" application/config/config.php
-sed -i "s#\('username' => \).*,\$#\\1'${DB_USERNAME}',#g" application/config/config.php
-sed -i "s#\('password' => \).*,\$#\\1'${DB_PASSWORD}',#g" application/config/config.php
-sed -i "s#\('charset' => \).*,\$#\\1'${DB_CHARSET}',#g" application/config/config.php
-sed -i "s#\('tablePrefix' => \).*,\$#\\1'${DB_TABLE_PREFIX}',#g" application/config/config.php
+if [ $DB_INITIALIZED == true ]; then
+    sed -i "s#\('connectionString' => \).*,\$#\\1'${DB_TYPE}:host=${DB_HOST};port=${DB_PORT};dbname=${DB_NAME};',#g" application/config/config.php
+    sed -i "s#\('username' => \).*,\$#\\1'${DB_USERNAME}',#g" application/config/config.php
+    sed -i "s#\('password' => \).*,\$#\\1'${DB_PASSWORD}',#g" application/config/config.php
+    sed -i "s#\('charset' => \).*,\$#\\1'${DB_CHARSET}',#g" application/config/config.php
+    sed -i "s#\('tablePrefix' => \).*,\$#\\1'${DB_TABLE_PREFIX}',#g" application/config/config.php
+fi 
 
 # Write UrlManager config
 sed -i "s#\('urlFormat' => \).*,\$#\\1'${URL_FORMAT}',#g" application/config/config.php
