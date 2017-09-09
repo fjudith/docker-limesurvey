@@ -7,6 +7,8 @@ ENV LIMESURVEY_URL=http://download.limesurvey.org/latest-stable-release/limesurv
 RUN apt-get update && \
     apt-get install -y \
     crudini \
+    postgresql-client \
+    mysql-client \
     git \
     curl \
     wget \
