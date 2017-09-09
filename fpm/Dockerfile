@@ -21,6 +21,14 @@ RUN apt-get update && \
 
 RUN mkdir -p /usr/src/php/ext
 
+# Install needed php extensions: zip
+RUN apt-get install -y libz-dev && \
+    curl -o zip.tgz -SL http://pecl.php.net/get/zip-1.13.5.tgz && \
+    tar -xf zip.tgz -C /usr/src/php/ext/ && \
+    rm zip.tgz && \
+    mv /usr/src/php/ext/zip-1.13.5 /usr/src/php/ext/zip
+    docker-php-ext-install zip
+
 # Install needed php extensions: memcached
 RUN apt-get install -y libmemcached-dev && \
     curl -o memcached.tgz -SL http://pecl.php.net/get/memcached-2.2.0.tgz && \
@@ -46,10 +54,6 @@ RUN apt-get install -y php5-ldap libldap2-dev && \
 RUN apt-get install -y php5-imap libssl-dev libc-client2007e-dev libkrb5-dev && \
     docker-php-ext-configure imap --with-imap-ssl --with-kerberos && \
     docker-php-ext-install imap
-
-# Install needed php extensions: zip
-RUN apt-get -y install zlib1g-dev && \
-    docker-php-ext-install zip
 
 # Install needed php extensions: bz2 
 RUN apt-get install -y libbz2-dev && \
