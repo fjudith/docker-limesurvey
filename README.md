@@ -3,6 +3,7 @@
 # Supported tags and respective Dockerfile links
 
 [`2.67.3`, `latest`](https://github.com/fjudith/docker-limesurvey/tree/2.67.3)
+[`2.67.3-fpm`](https://github.com/fjudith/docker-limesurvey/tree/2.67.3/fpm)
 [`2.67.1`](https://github.com/fjudith/docker-limesurvey/tree/2.67.1)
 
 # Introduction
@@ -21,6 +22,7 @@ The Dockerfile buils from "php:5-apache (see https://hub.docker.com/_/php/)
 ## Roadmap
 
 * [x] Support SMTP environment variables for email notifications
+* [x] Support Memcached (nginx/fpm only)
 * [ ] Implement external url environment variable to fix email template URL.  
 
 ## Quick Start
