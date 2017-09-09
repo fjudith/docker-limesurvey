@@ -113,7 +113,7 @@ if [ "$PUBLIC_URL" ]; then
 fi
 
 # Write Memcached config
-if [ "$MEMCACHED_HOST"]; then
+if [ "$MEMCACHED_HOST" ]; then
     sed -i "s#\('db' => array(\)#'cache'=>array(\n\t\t\t'class'=>'CMemCache',\n\t\t\t'servers'=>array(\n\t\t\t\tarray(\n\t\t\t\t\t'host'=>'${MEMCACHED_HOST}',\n\t\t\t\t\t'port'=>'${MEMCACHED_PORT}',\n\t\t\t\t\t'weight'=>'${MEMCACHED_WEIGHT}',\n\t\t\t\t),\n\t\t\t),\n\t\t),\n\t\t\\1 #g" application/config/config.php
 fi
 
