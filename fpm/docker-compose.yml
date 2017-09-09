@@ -17,7 +17,7 @@ limesurvey-mc:
   image: memcached
 
 limesurvey:
-  image: fjudith/limesurvey
+  image: fjudith/limesurvey:2.63.7-fpm
   restart: always
   ports:
     - "32705:80"
