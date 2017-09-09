@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e 
+set -e pipefail
 
 SMTP_HOST=${SMTP_HOST:-'localhost'}
 SMTP_PORT=${SMTP_PORT:-'25'}
@@ -66,9 +66,9 @@ if [[ -v MYSQL_ENV_GOSU_VERSION ]]; then
     : ${DB_CHARSET=${DB_CHARSET:-'utf8mb4'}}
     
     echo 'Using MySQL'
-    if ! mysql -h mysql -u $DB_USERNAME -p$DB_PASSWORD $DB_NAME -e "SELECT 1 FROM information_schema.tables WHERE table_schema = '${DB_NAME}' AND table_name = '${DB_TABLE_PREFIX}_templates';" | grep 1 ; then
+    if ! mysql -h mysql -u $DB_USERNAME -p$DB_PASSWORD $DB_NAME -e "SELECT 1 FROM information_schema.tables WHERE table_schema = '${DB_NAME}' AND table_name = '${DB_TABLE_PREFIX}_answers';" | grep 1 ; then
         echo 'Initializing MySQL database'
-        mysql -h mysql -u $DB_USERNAME -p$DB_PASSWORD $DB_NAME < installer/sql/create-mysql.sql
+        #mysql -h mysql -u $DB_USERNAME -p$DB_PASSWORD $DB_NAME < installer/sql/create-mysql.sql
     else
         echo 'Database already initialized'
     fi
@@ -96,9 +96,9 @@ if [[ -v POSTGRES_ENV_GOSU_VERSION ]]; then
     : ${DB_CHARSET=${DB_CHARSET:-'utf8'}}
 
     echo 'Using PostgreSQL'
-    if ! psql postgresql://$DB_USERNAME:$DB_PASSWORD@postgres/$DB_NAME -c "SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = '${DB_TABLE_PREFIX}_templates';" | grep 1 ; then
+    if ! psql postgresql://$DB_USERNAME:$DB_PASSWORD@postgres/$DB_NAME -c "SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = '${DB_TABLE_PREFIX}_answers';" | grep 1 ; then
         echo 'Initializing PostgreSQL database'
-        psql postgresql://$DB_USERNAME:$DB_PASSWORD@postgres/$DB_NAME -f installer/sql/create-pgsql.sql
+        #psql postgresql://$DB_USERNAME:$DB_PASSWORD@postgres/$DB_NAME -f installer/sql/create-pgsql.sql
     else
         echo 'Database already initialized'
     fi
