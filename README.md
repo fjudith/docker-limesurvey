@@ -179,7 +179,7 @@ limesurvey:
     MAIL_FROM_DEFAULT: no-reply@example.com
     MAIL_DOMAIN: mail.example.com
   volumes:
-    - limesurvey-upload:/var/www/html/upload
+    - limesurvey-data:/var/www/html
   links:
     - limesurvey-md:mysql
     - limesruvey-pc:memcached
