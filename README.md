@@ -126,9 +126,9 @@ limesurvey-md:
     MYSQL_USER: limesurvey
     MYSQL_PASSWORD: V3rY1ns3cur3P4ssw0rd
   volumes:
-  - limesurvey-db:/var/lib/mysql
-  - limesurvey-dblog:/var/log/mysql
-  - limeservey-dbetc:/etc/mysql
+    - limesurvey-db:/var/lib/mysql
+    - limesurvey-dblog:/var/log/mysql
+    - limeservey-dbetc:/etc/mysql
 
 limesurvey:
   image: fjudith/limesurvey
@@ -157,9 +157,9 @@ limesurvey-md:
     MYSQL_USER: limesurvey
     MYSQL_PASSWORD: V3rY1ns3cur3P4ssw0rd
   volumes:
-  - limesurvey-db:/var/lib/mysql
-  - limesurvey-dblog:/var/log/mysql
-  - limeservey-dbetc:/etc/mysql
+    - limesurvey-db:/var/lib/mysql
+    - limesurvey-dblog:/var/log/mysql
+    - limeservey-dbetc:/etc/mysql
 
 limesurvey-mc:
   image: memcached
@@ -185,17 +185,17 @@ limesurvey:
     - limesruvey-pc:memcached
 
 limesurvey-nginx:
-  image: nginx
+  image: fjudith/limesurvey:nginx
   ports:
-  - 32716:443/tcp
-  - 32715:80/tcp
+    - 32716:443/tcp
+    - 32715:80/tcp
   links:
-  - limesurvey-mc:memcached
-  - limesurvey:limesurvey
+    - limesurvey-mc:memcached
+    - limesurvey:limesurvey
   volumes:
-  - limesurvey-data:/var/www/html:ro
-  - limesurvey-nginx-config:/etc/nginx
-  - limesurvey-nginx-log:/var/log/nginx
+    - limesurvey-data:/var/www/html:ro
+    - limesurvey-nginx-config:/etc/nginx
+    - limesurvey-nginx-log:/var/log/nginx
 ```
 
 And run:
