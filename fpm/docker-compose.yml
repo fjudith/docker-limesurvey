@@ -17,18 +17,27 @@ limesurvey-mc:
   image: memcached
 
 limesurvey:
-  image: fjudith/limesurvey:2.63.7-fpm
+  image: fjudith/limesurvey:fpm
   restart: always
   ports:
     - "32705:80"
+  environement:
+    MEMCACHED_HOST: memcached
+    PUBLIC_URL: http://survey.example.loc
+    SMTP_HOST: smtp.example.com
+    SMTP_TLS: on
+    SMTP_PORT: 465
+    SMTP_AUTH: off
+    MAIL_FROM_DEFAULT: no-reply@example.com
+    MAIL_DOMAIN: mail.example.com
   volumes:
     - limesurvey-upload:/var/www/html/upload
   links:
-    - limesurvey-md:mariadb
+    - limesurvey-md:mysql
     - limesruvey-pc:memcached
 
 limesurvey-nginx:
-  image: nginx
+  image: fjudith/limesurvey:nginx
   ports:
   - 32716:443/tcp
   - 32715:80/tcp

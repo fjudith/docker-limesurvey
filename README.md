@@ -58,6 +58,43 @@ docker run --name='limesurvey' -d \
 fjudith/limesruvey
 ```
 
+## Environment variables
+
+### Database
+
+- **DB_TYPE**: postgresql or mysql; default = `mysql`
+- **DB_HOST**: host of the database server; default = `mysql`
+- **DB_PORT**: host of the database server; default = `3306`
+- **DB_USERNAME**: username to use when connecting to the database; default = `root`
+- **DB_PASSWORD**: password to use when connecting to the database; default = _empty_
+- **DB_NAME**: name of the database to connect to; default = `limesurvey`
+- **DB_TABLE_PREFIX**: prefix name of database table; default = `lime_`
+
+### Public URL
+
+- **PUBLIC_URL**: root URL to be written in email noficiations; default = _empty_
+
+### SMTP
+
+- **SMTP_HOST**: hostname/fqdn of the SMTP server; default = `localhost`
+- **SMTP_PORT**: tcp listen port of the SMTP server; default = `25`
+- **SMTP_PROTOCOL**: smtp or lsmtp protocol; default = `smtp`
+- **SMTP_AUTH**: enable smtp authentification; default = `off`
+    - **SMTP_USERNAME**: user to connect the SMTP server; default = _empty_
+    - **SMTP_PASSWORD**: password to connect the SMTP server; default = _empty_
+- **SMTP_TIMEOUT**: email notification timeout (milliseconds); default = `30000`
+- **SMTP_TLS**: enable smtp over ssl; default = `off`
+    - **SMTP_TLS_CHECK**: enable server side certificate validation; default = `off`
+    - **SMTP_STARTTLS**: enable STARTTLS method; default = `off`
+    - **SMTP_TLS_TRUST_FILE**: path to trusted certificate file; default = _empty_
+- **MAIL_FROM_DEFAULT**: sender emal address; default = `limesurvey@example.com`
+- **MAIL_DOMAIN**; _(optional)_, sets the argument of the SMTP EHLO (or LMTP LHLO) command. The default is ‘localhost’, which is stupid but usually works. Try to change the default if mails get rejected due to anti-SPAM measures. Possible choices are the domain part of your mail address (provider.example for joe@provider.example) or the fully qualified domain name of your host (if available); default = _empty_
+
+### Memcached
+
+- **MEMCACHE_HOST**: hostname/fqdn of the Memcached server; default = _empty_
+- **MEMCACHE_PORT**: tcp listen port of the Memcaced server; default = _empty_
+
 ## Initial configuration
 
 1. Start a web browser session to http://ip:port
@@ -72,6 +109,10 @@ fjudith/limesruvey
 
 # Docker-Compose
 You can use docker compose to automate the above command if you create a file called docker-compose.yml and put in there the following:
+
+#### Small deployment
+
+Runs inside apache.
 
 ```yaml
 limesurvey-md:
@@ -97,7 +138,64 @@ limesurvey:
   volumes:
     - limesurvey-upload:/var/www/html/upload
   links:
-    - limesurvey-md:mariadb
+    - limesurvey-md:mysql
+```
+
+#### Large deployement
+
+Runs inside `php-fpm` linked to `memchaced` and `nginx` external containers.
+
+```yaml
+limesurvey-md:
+  image: mariadb
+  restart: always
+  ports:
+    - "32805:3306"
+  environment:
+    MYSQL_DATABASE: limesurvey
+    MYSQL_ROOT_PASSWORD: V3rY1ns3cur3P4ssw0rd
+    MYSQL_USER: limesurvey
+    MYSQL_PASSWORD: V3rY1ns3cur3P4ssw0rd
+  volumes:
+  - limesurvey-db:/var/lib/mysql
+  - limesurvey-dblog:/var/log/mysql
+  - limeservey-dbetc:/etc/mysql
+
+limesurvey-mc:
+  image: memcached
+
+limesurvey:
+  image: fjudith/limesurvey:fpm
+  restart: always
+  ports:
+    - "32705:80"
+  environement:
+    MEMCACHED_HOST: memcached
+    PUBLIC_URL: http://survey.example.loc
+    SMTP_HOST: smtp.example.com
+    SMTP_TLS: on
+    SMTP_PORT: 465
+    SMTP_AUTH: off
+    MAIL_FROM_DEFAULT: no-reply@example.com
+    MAIL_DOMAIN: mail.example.com
+  volumes:
+    - limesurvey-upload:/var/www/html/upload
+  links:
+    - limesurvey-md:mysql
+    - limesruvey-pc:memcached
+
+limesurvey-nginx:
+  image: nginx
+  ports:
+  - 32716:443/tcp
+  - 32715:80/tcp
+  links:
+  - limesurvey-mc:memcached
+  - limesurvey:limesurvey
+  volumes:
+  - limesurvey-data:/var/www/html:ro
+  - limesurvey-nginx-config:/etc/nginx
+  - limesurvey-nginx-log:/var/log/nginx
 ```
 
 And run:
