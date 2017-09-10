@@ -65,7 +65,7 @@ fjudith/limesruvey
 - **DB_TYPE**: postgresql or mysql; default = `mysql`
 - **DB_HOST**: host of the database server; default = `mysql`
 - **DB_PORT**: host of the database server; default = `3306`
-- **DB_USERNAME**: username to use when connecting to the database; default = `root`
+- **DB_USERNAME**: username to use when connecting to the database; default = _empty_
 - **DB_PASSWORD**: password to use when connecting to the database; default = _empty_
 - **DB_NAME**: name of the database to connect to; default = `limesurvey`
 - **DB_TABLE_PREFIX**: prefix name of database table; default = `lime_`
