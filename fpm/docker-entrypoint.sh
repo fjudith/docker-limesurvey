@@ -113,7 +113,7 @@ if [[ -v POSTGRES_ENV_GOSU_VERSION ]]; then
 fi
 
 # Write Database config
-if [-f application/config/config.php ]; then
+if [[ -f application/config/config.php ]]; then
     sed -i "s#\('connectionString' => \).*,\$#\\1'${DB_TYPE}:host=${DB_HOST};port=${DB_PORT};dbname=${DB_NAME};',#g" application/config/config.php
     sed -i "s#\('username' => \).*,\$#\\1'${DB_USERNAME}',#g" application/config/config.php
     sed -i "s#\('password' => \).*,\$#\\1'${DB_PASSWORD}',#g" application/config/config.php
@@ -122,17 +122,17 @@ if [-f application/config/config.php ]; then
 fi 
 
 # Write UrlManager config
-if [-f application/config/config.php ]; then
+if [[ -f application/config/config.php ]]; then
     sed -i "s#\('urlFormat' => \).*,\$#\\1'${URL_FORMAT}',#g" application/config/config.php
 fi
 
 # Write Public URL
-if [ "$PUBLIC_URL" ] && [-f application/config/config.php ]; then
+if [ "$PUBLIC_URL" ] && [[ -f application/config/config.php ]]; then
     sed -i "s#\('debug'=>0,\)\$#'publicurl'=>'${PUBLIC_URL}',\n\t\t\\1 #g" application/config/config.php
 fi
 
 # Write Memcached config
-if [ "$MEMCACHE_HOST" ] && [-f application/config/config.php ]; then
+if [ "$MEMCACHE_HOST" ] && [[ -f application/config/config.php ]]; then
     sed -i "s#\('db' => array(\)#'cache'=>array(\n\t\t\t'class'=>'CMemCache',\n\t\t\t'servers'=>array(\n\t\t\t\tarray(\n\t\t\t\t\t'host'=>'${MEMCACHE_HOST}',\n\t\t\t\t\t'port'=>'${MEMCACHE_PORT}',\n\t\t\t\t\t'weight'=>'${MEMCACHE_WEIGHT}',\n\t\t\t\t),\n\t\t\t),\n\t\t),\n\t\t\\1 #g" application/config/config.php
 fi
 
