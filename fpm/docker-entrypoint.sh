@@ -127,12 +127,12 @@ if [ -f application/config/config.php ]; then
 fi
 
 # Write Public URL
-if [ -v "$PUBLIC_URL" ] && [ -f application/config/config.php ]; then
+if [ "$PUBLIC_URL" ] && [ -f application/config/config.php ]; then
     sed -i "s#\('debug'=>0,\)\$#'publicurl'=>'${PUBLIC_URL}',\n\t\t\\1 #g" application/config/config.php
 fi
 
 # Write Memcached config
-if [ -v "$MEMCACHE_HOST" ] && [ -f application/config/config.php ]; then
+if [ "$MEMCACHE_HOST" ] && [ -f application/config/config.php ]; then
     sed -i "s#\('db' => array(\)#'cache'=>array(\n\t\t\t'class'=>'CMemCache',\n\t\t\t'servers'=>array(\n\t\t\t\tarray(\n\t\t\t\t\t'host'=>'${MEMCACHE_HOST}',\n\t\t\t\t\t'port'=>'${MEMCACHE_PORT}',\n\t\t\t\t\t'weight'=>'${MEMCACHE_WEIGHT}',\n\t\t\t\t),\n\t\t\t),\n\t\t),\n\t\t\\1 #g" application/config/config.php
 fi
 
