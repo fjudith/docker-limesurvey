@@ -6,6 +6,15 @@ FROM nginx:stable
 
 MAINTAINER Florian JUDITH <florian.judith.b@gmail.com>
 
+COPY nginx.conf /etc/nginx/
+
+
+RUN touch /var/run/nginx.pid  && \
+    mkdir -p /var/www/html && \
+    chown -R www-data:www-data /var/www && \
+    chown -R www-data:www-data /var/run/nginx.pid && \
+    chown -R www-data:www-data /var/cache/nginx
+
 USER www-data
 
-COPY nginx.conf /etc/nginx/
+EXPOSE 8080 8443
