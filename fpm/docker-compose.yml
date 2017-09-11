@@ -19,8 +19,6 @@ limesurvey-mc:
 limesurvey:
   image: fjudith/limesurvey:fpm
   restart: always
-  ports:
-    - "32705:80"
   environement:
     MEMCACHED_HOST: memcached
     PUBLIC_URL: http://survey.example.loc
@@ -39,8 +37,8 @@ limesurvey:
 limesurvey-nginx:
   image: fjudith/limesurvey:nginx
   ports:
-    - 32716:443/tcp
-    - 32715:80/tcp
+    - 32706:8443/tcp
+    - 32705:8080/tcp
   links:
     - limesurvey-mc:memcached
     - limesurvey:limesurvey

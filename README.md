@@ -167,8 +167,6 @@ limesurvey-mc:
 limesurvey:
   image: fjudith/limesurvey:fpm
   restart: always
-  ports:
-    - "32705:80"
   environement:
     MEMCACHED_HOST: memcached
     PUBLIC_URL: http://survey.example.loc
@@ -179,7 +177,7 @@ limesurvey:
     MAIL_FROM_DEFAULT: no-reply@example.com
     MAIL_DOMAIN: mail.example.com
   volumes:
-    - limesurvey-data:/var/www/html
+    - limesurvey-upload:/var/www/html/upload
   links:
     - limesurvey-md:mysql
     - limesruvey-pc:memcached
@@ -187,13 +185,13 @@ limesurvey:
 limesurvey-nginx:
   image: fjudith/limesurvey:nginx
   ports:
-    - 32716:443/tcp
-    - 32715:80/tcp
+    - 32706:8443/tcp
+    - 32705:8080/tcp
   links:
     - limesurvey-mc:memcached
     - limesurvey:limesurvey
   volumes:
-    - limesurvey-data:/var/www/html:ro
+    - limesurvey-data:/var/www/html
     - limesurvey-nginx-config:/etc/nginx
     - limesurvey-nginx-log:/var/log/nginx
 ```
