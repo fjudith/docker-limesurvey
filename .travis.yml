@@ -3,7 +3,9 @@ env:
   # Docker Repository
   - REPO=fjudith/limesurvey
   # Compute docker tag
-  - TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH ; fi`
+  - TAG=`if [ "${TRAVIS_BRANCH}" == "master" ]; then echo "latest"; else echo ${TRAVIS_BRANCH} ; fi`
+  - FPM=`if [ "${TRAVIS_BRANCH}" == "master" ]; then echo "fpm"; else echo ${TRAVIS_BRANCH}-fpm ; fi`
+  - NGINX=`if [ "${TRAVIS_BRANCH}" == "master" ]; then echo "nginx"; else echo ${TRAVIS_BRANCH}-nginx ; fi`
   # Retreive commit ID
   - COMMIT=${TRAVIS_COMMIT::8}
   - secure: "Lu0uXPy9kxcpjQyMBADPmn3IIZB4UrGjdeVj/CedTj7NQ/Kxl2zHkcP1PA0RYUL9KLtB+ieF+HX3rHk4CmXvEcypqXo7Ll/qmXKbzSirYBU3ipbbdI8f+TEqiG8GNIKcd0lL1kghLzG/iBdTUqOxIGm9Kod/rLipLDatGrLPHvYZm+yGvcRmYLtTMihQFA1VJOw9p5PNQ4tXB25q4NrnDWvrz0MF6etgE7LHOtkw0Mdi1yFuiZTm8fLmvSQ8Cjyc3jLTVXpBwwAN7twWqguGjKFu7KAVqvaVwF0+pHBKt3AE0Yvu0yHygwNsbF76HzHCJghXxsTW+t4NCWM1c2DCCEID32cwWuvYUx3gil5OSj+5RIEQo4pRgLXfc3ZfymvEd19dFTbrkfR1B0XT7bY06YVjbuHIIrD8BlRA9iRxRDnNnQnUGEMLE132N8xDqK/xdXmzQwVddvjXbFn7XCt+c4ZzUY1YHYlfd+Bxw2P8DL+m0B1abarCVUsqx7rfIqvzDqAvuXajW2oxhvfccSEwXLLHS1Fi5kdON87ld8+SpuHHfRZFsgUIWBafPpt1ra2BDwIYNQG1Bweq8MyGAGVdg3MBOaiBg/rZMuDsbbYCcr03tVNYsJ+9qmjytzVeDxCidHErXnKzhG3BITb5j05zHZ0JbpBoNnFHTSo3loLfW58="
@@ -17,11 +19,18 @@ services:
 
 
 before_install:
+  # Apache build
   - docker build -f Dockerfile -t $REPO:$TAG .
   - docker run --name='limesurvey-md' -d -e MYSQL_DATABASE=limesurvey -e MYSQL_ROOT_PASSWORD=V3rY1ns3cur3P4ssw0rd -e MYSQL_USER=limesurvey -e MYSQL_PASSWORD=V3rY1ns3cur3P4ssw0rd mariadb
+  - sleep 10
   - docker run --name 'limesurvey' -d --link limesurvey-md:mysql -p 32735:8080 -p 32736:8443 $REPO:$TAG
+  # fpm build
+  - docker build -f Dockerfile -t $REPO:$FPM ./fpm/
+  - docker build -f Dockerfile -t $REPO:$NGINX ./fpm/nginx/
+  - docker run --name 'limesurvey-mc' -d memcached
+  - docker run --name 'limesurvey-fpm' -d --link limesurvey-mc:memcached --link limesurvey:limesurvey -e MEMCACHE_HOST=memcached -v limesurvey-data:/var/www/html $REPO:$FPM
+  - docker run --name 'limesurvey-nginx' -d --link limesurvey-mc:memcached --link limesurvey-md:mysql -v limesurvey-data:/var/www/html $REPO:$NGINX
   - docker ps -a
-
 
 script:
   # Wait for Limesurvey to start
@@ -30,10 +39,11 @@ script:
   # -i, --include – include protocol headers in the output (H/F)
   # -X, --request – specify request  COMMAND (GET, PUT, DELETE…)  to use
   - docker exec limesurvey /bin/bash -c "curl -i http://localhost:8080"
+  - docker exec limesurvey-nginx /bin/bash -c "curl -i http://localhost:80"
 
 
 after_success:
   - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
-  - docker tag $REPO:$COMMIT $REPO:$TAG
-  - docker tag $REPO:$COMMIT $REPO:travis-$TRAVIS_BUILD_NUMBER
-  - docker push $REPO
+  - docker push $REPO:$TAG
+  - docker push $REPO:$FPM
+  - docker push $REPO:$NGINX
