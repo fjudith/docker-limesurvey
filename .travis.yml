@@ -24,7 +24,7 @@ before_install:
 
 
 script:
-  # Wait for draw.io to start
+  # Wait for Limesurvey to start
   - sleep 10
   - docker logs limesurvey
   # -i, --include – include protocol headers in the output (H/F)
