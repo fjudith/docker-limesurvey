@@ -25,8 +25,8 @@ before_install:
   - sleep 10
   - docker run --name 'limesurvey' -d --link limesurvey-md:mysql -p 32735:8080 -p 32736:8443 $REPO:$TAG
   # fpm build
-  - docker build -f Dockerfile -t $REPO:$FPM ./fpm/
-  - docker build -f Dockerfile -t $REPO:$NGINX ./fpm/nginx/
+  - docker build -f fpm/Dockerfile -t $REPO:$FPM fpm/
+  - docker build -f fpm/nginx/Dockerfile -t $REPO:$NGINX fpm/nginx/
   - docker run --name 'limesurvey-mc' -d memcached
   - docker run --name 'limesurvey-fpm' -d --link limesurvey-mc:memcached --link limesurvey:limesurvey -e MEMCACHE_HOST=memcached -v limesurvey-data:/var/www/html $REPO:$FPM
   - docker run --name 'limesurvey-nginx' -d --link limesurvey-mc:memcached --link limesurvey-md:mysql -v limesurvey-data:/var/www/html $REPO:$NGINX
