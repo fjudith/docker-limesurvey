@@ -34,7 +34,7 @@ before_install:
 
 script:
   # Wait for Limesurvey to start
-  - sleep 10
+  - sleep 5
   - docker logs limesurvey
   # -i, --include – include protocol headers in the output (H/F)
   # -X, --request – specify request  COMMAND (GET, PUT, DELETE…)  to use
