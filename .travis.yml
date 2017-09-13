@@ -22,7 +22,7 @@ before_install:
   # Apache build
   - docker build -f Dockerfile -t $REPO:$TAG .
   - docker run --name='limesurvey-md' -d -e MYSQL_DATABASE=limesurvey -e MYSQL_ROOT_PASSWORD=V3rY1ns3cur3P4ssw0rd -e MYSQL_USER=limesurvey -e MYSQL_PASSWORD=V3rY1ns3cur3P4ssw0rd mariadb
-  - sleep 10
+  - sleep 20
   - docker run --name 'limesurvey' -d --link limesurvey-md:mysql -p 32735:8080 -p 32736:8443 $REPO:$TAG
   # fpm build
   - docker build -f fpm/Dockerfile -t $REPO:$FPM fpm/
