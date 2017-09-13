@@ -39,7 +39,7 @@ script:
   # -i, --include – include protocol headers in the output (H/F)
   # -X, --request – specify request  COMMAND (GET, PUT, DELETE…)  to use
   - docker exec limesurvey /bin/bash -c "curl -i http://localhost:8080"
-  - docker exec limesurvey-nginx /bin/bash -c "curl -i http://localhost:80"
+  - docker exec limesurvey-nginx /bin/bash -c "curl -i http://localhost:8080"
 
 
 after_success:
