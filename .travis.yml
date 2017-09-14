@@ -28,8 +28,8 @@ before_install:
   - docker build -f fpm/Dockerfile -t $REPO:$FPM fpm/
   - docker build -f fpm/nginx/Dockerfile -t $REPO:$NGINX fpm/nginx/
   - docker run --name 'limesurvey-mc' -d memcached
-  - docker run --name 'limesurvey-fpm' -d --link limesurvey-mc:memcached --link limesurvey:limesurvey -e MEMCACHE_HOST=memcached -v limesurvey-data:/var/www/html $REPO:$FPM
-  - docker run --name 'limesurvey-nginx' -d --link limesurvey-mc:memcached --link limesurvey-md:mysql -v limesurvey-data:/var/www/html -p 32702:8080 $REPO:$NGINX
+  - docker run --name 'limesurvey-fpm' -d --link limesurvey-mc:memcached --link limesurvey-md:mysql -e MEMCACHE_HOST=memcached -v limesurvey-data:/var/www/html $REPO:$FPM
+  - docker run --name 'limesurvey-nginx' -d --link limesurvey-mc:memcached --link limesurvey:limesurvey -v limesurvey-data:/var/www/html -p 32702:8080 $REPO:$NGINX
   - docker ps -a
 
 script:
