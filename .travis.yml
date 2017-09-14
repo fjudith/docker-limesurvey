@@ -20,17 +20,18 @@ services:
 
 before_install:
   # Apache build
-  - docker build -f Dockerfile -t $REPO:$TAG .
+  - docker build -f Dockerfile -t $REPO:$COMMIT .
   - docker run --name='limesurvey-md' -d -e MYSQL_DATABASE=limesurvey -e MYSQL_ROOT_PASSWORD=V3rY1ns3cur3P4ssw0rd -e MYSQL_USER=limesurvey -e MYSQL_PASSWORD=V3rY1ns3cur3P4ssw0rd mariadb
   - sleep 20
-  - docker run --name 'limesurvey' -d --link limesurvey-md:mysql -p 32701:8080 $REPO:$TAG
+  - docker run --name 'limesurvey' -d --link limesurvey-md:mysql -p 32701:8080 $REPO:$COMMIT
   # fpm build
-  - docker build -f fpm/Dockerfile -t $REPO:$FPM fpm/
-  - docker build -f fpm/nginx/Dockerfile -t $REPO:$NGINX fpm/nginx/
+  - docker build -f fpm/Dockerfile -t $REPO:$COMMIT-fpm fpm/
+  - docker build -f fpm/nginx/Dockerfile -t $REPO:$COMMIT-nginx fpm/nginx/
   - docker run --name 'limesurvey-mc' -d memcached
-  - docker run --name 'limesurvey-fpm' -d --link limesurvey-mc:memcached --link limesurvey-md:mysql -e MEMCACHE_HOST=memcached -v limesurvey-data:/var/www/html $REPO:$FPM
-  - docker run --name 'limesurvey-nginx' -d --link limesurvey-mc:memcached --link limesurvey:limesurvey -v limesurvey-data:/var/www/html -p 32702:8080 $REPO:$NGINX
+  - docker run --name 'limesurvey-fpm' -d --link limesurvey-mc:memcached --link limesurvey-md:mysql -e MEMCACHE_HOST=memcached -v limesurvey-data:/var/www/html $REPO:$COMMIT-fpm
+  - docker run --name 'limesurvey-nginx' -d --link limesurvey-mc:memcached --link limesurvey:limesurvey -v limesurvey-data:/var/www/html -p 32702:8080 $REPO:$COMMIT-nginx
   - docker ps -a
+
 
 script:
   # Wait for Limesurvey to start
@@ -42,8 +43,14 @@ script:
   - docker run --rm --link limesurvey-nginx:nginx phusion/baseimage /bin/bash -c "curl -i -L http://nginx:8080"
 
 
-after_success:
+  after_success:
   - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+  - docker tag $REPO:$COMMIT $REPO:$TAG
+  - docker tag $REPO:$COMMIT $REPO:travis-$TRAVIS_BUILD_NUMBER
   - docker push $REPO:$TAG
+  - docker tag $REPO:$COMMIT-fpm $REPO:$FPM
+  - docker tag $REPO:$COMMIT-fpm $REPO:travis-$TRAVIS_BUILD_NUMBER-fpm
   - docker push $REPO:$FPM
+  - docker tag $REPO:$COMMIT-nginx $REPO:$NGINX
+  - docker tag $REPO:$COMMIT-nginx $REPO:travis-$TRAVIS_BUILD_NUMBER
   - docker push $REPO:$NGINX
