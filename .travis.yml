@@ -43,7 +43,7 @@ script:
   - docker run --rm --link limesurvey-nginx:nginx phusion/baseimage /bin/bash -c "curl -i -L http://nginx:8080"
 
 
-  after_success:
+after_success:
   - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
   - docker tag $REPO:$COMMIT $REPO:$TAG
   - docker tag $REPO:$COMMIT $REPO:travis-$TRAVIS_BUILD_NUMBER
