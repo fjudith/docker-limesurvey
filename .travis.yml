@@ -23,13 +23,13 @@ before_install:
   - docker build -f Dockerfile -t $REPO:$TAG .
   - docker run --name='limesurvey-md' -d -e MYSQL_DATABASE=limesurvey -e MYSQL_ROOT_PASSWORD=V3rY1ns3cur3P4ssw0rd -e MYSQL_USER=limesurvey -e MYSQL_PASSWORD=V3rY1ns3cur3P4ssw0rd mariadb
   - sleep 20
-  - docker run --name 'limesurvey' -d --link limesurvey-md:mysql $REPO:$TAG
+  - docker run --name 'limesurvey' -d --link limesurvey-md:mysql -p 32701:8080 $REPO:$TAG
   # fpm build
   - docker build -f fpm/Dockerfile -t $REPO:$FPM fpm/
   - docker build -f fpm/nginx/Dockerfile -t $REPO:$NGINX fpm/nginx/
   - docker run --name 'limesurvey-mc' -d memcached
   - docker run --name 'limesurvey-fpm' -d --link limesurvey-mc:memcached --link limesurvey:limesurvey -e MEMCACHE_HOST=memcached -v limesurvey-data:/var/www/html $REPO:$FPM
-  - docker run --name 'limesurvey-nginx' -d --link limesurvey-mc:memcached --link limesurvey-md:mysql -v limesurvey-data:/var/www/html $REPO:$NGINX
+  - docker run --name 'limesurvey-nginx' -d --link limesurvey-mc:memcached --link limesurvey-md:mysql -v limesurvey-data:/var/www/html -p 32702:8080 $REPO:$NGINX
   - docker ps -a
 
 script:
@@ -38,8 +38,8 @@ script:
   - docker logs limesurvey
   # -i, --include – include protocol headers in the output (H/F)
   # -X, --request – specify request  COMMAND (GET, PUT, DELETE…)  to use
-  - docker exec limesurvey /bin/bash -c "curl -i http://localhost:8080"
-  - docker exec limesurvey-nginx /bin/bash -c "curl -i http://localhost:8080"
+  - curl -i http://localhost:32701"
+  - curl -i http://localhost:32702"
 
 
 after_success:
