@@ -1,4 +1,5 @@
 [![](https://images.microbadger.com/badges/image/fjudith/limesurvey.svg)](https://microbadger.com/images/fjudith/limesurvey "Get your own image badge on microbadger.com")
+[![Build Status](https://travis-ci.org/fjudith/docker-jenkins.svg?branch=master)](https://travis-ci.org/fjudith/docker-jenkins)
 
 # Supported tags and respective Dockerfile links
 
