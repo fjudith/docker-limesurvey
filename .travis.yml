@@ -38,8 +38,8 @@ script:
   - docker logs limesurvey
   # -i, --include – include protocol headers in the output (H/F)
   # -X, --request – specify request  COMMAND (GET, PUT, DELETE…)  to use
-  - curl -i http://localhost:32701"
-  - curl -i http://localhost:32702"
+  - curl -i http://localhost:32701
+  - curl -i http://localhost:32702
 
 
 after_success:
