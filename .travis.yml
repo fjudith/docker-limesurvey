@@ -38,8 +38,8 @@ script:
   - docker logs limesurvey
   # -i, --include – include protocol headers in the output (H/F)
   # -X, --request – specify request  COMMAND (GET, PUT, DELETE…)  to use
-  - docker run --rm phusion/baseimage --link limesurvey:apache /bin/bash -c "http://apache:8080"
-  - docker run --rm phusion/baseimage --link limesurvey-nginx:nginx /bin/bash -c "http://nginx:8080"
+  - docker run --rm --link limesurvey:apache phusion/baseimage /bin/bash -c "http://apache:8080"
+  - docker run --rm --link limesurvey-nginx:nginx phusion/baseimage /bin/bash -c "http://nginx:8080"
 
 
 after_success:
