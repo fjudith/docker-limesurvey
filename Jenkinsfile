@@ -42,7 +42,7 @@ pipeline {
                         sh 'rm -rf *'
                         unstash 'everything'
                         sh 'tree -sh'
-                        sh "docker build -f nginx/Dockerfile -t ${REPO}:${GIT_COMMIT}-nginx nginx/"
+                        sh "docker build -f fpm/nginx/Dockerfile -t ${REPO}:${GIT_COMMIT}-nginx fpm/nginx/"
                     }
                 }
                 stage ('Limesurvey FPM server') {
