@@ -123,8 +123,8 @@ pipeline {
                     post {
                         always {
                             echo 'Remove mono stack'
-                            sh "docker rm -f limesurvey-${BUILD_NUMBER}"
-                            sh "docker rm -f mariadb-${BUILD_NUMBER}"
+                            sh "docker rm -fv limesurvey-${BUILD_NUMBER}"
+                            sh "docker rm -fv mariadb-${BUILD_NUMBER}"
                             sh "docker network rm limesurvey-mono-${BUILD_NUMBER}"
                         }
                         success {
@@ -146,10 +146,10 @@ pipeline {
                         always {
                             echo 'Remove micro-services stack'
 
-                            sh "docker rm -f nginx-${BUILD_NUMBER}"
-                            sh "docker rm -f fpm-${BUILD_NUMBER}"
-                            sh "docker rm -f memcached-${BUILD_NUMBER}"
-                            sh "docker rm -f mariadb-${BUILD_NUMBER}"
+                            sh "docker rm -fv nginx-${BUILD_NUMBER}"
+                            sh "docker rm -fv fpm-${BUILD_NUMBER}"
+                            sh "docker rm -fv memcached-${BUILD_NUMBER}"
+                            sh "docker rm -fv mariadb-${BUILD_NUMBER}"
                         }
                         success {
                             sh "docker login -u ${DOCKER_PRIVATE_USR} -p ${DOCKER_PRIVATE_PSW} ${PRIVATE_REGISTRY}"
