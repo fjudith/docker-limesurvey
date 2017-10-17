@@ -96,7 +96,7 @@ pipeline {
                         sh "docker run -d --name 'mariadb-${BUILD_NUMBER}' -e MYSQL_ROOT_PASSWORD=limesurvey -e MYSQL_USER=limesurvey -e MYSQL_PASSWORD=limesurvey -e MYSQL_DATABASE=limesurvey --network limesurvey-micro-${BUILD_NUMBER} amd64/mariadb:10.0"
                         sleep 15
                         // Start Memcached
-                        sh "docker run -d --name 'memcached-${BUILD_NUMBER} memcached'"
+                        sh "docker run -d --name 'memcached-${BUILD_NUMBER}' memcached"
                         // Start application micro-services
                         sh "docker run -d --name 'fpm-${BUILD_NUMBER}' --link mariadb-${BUILD_NUMBER}:mariadb --link memcached-${BUILD_NUMBER}:memcached --network limesurvey-micro-${BUILD_NUMBER} ${REPO}:${COMMIT}-fpm"
                         sh "docker run -d --name 'nginx-${BUILD_NUMBER}' --link fpm-${BUILD_NUMBER}:fpm --link memcached-${BUILD_NUMBER}:memcached --network limesurvey-micro-${BUILD_NUMBER} ${REPO}:${COMMIT}-nginx"
