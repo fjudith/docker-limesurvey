@@ -100,7 +100,7 @@ pipeline {
                         sleep 15
                         // Start application micro-services
                         sh "docker run -d --name 'fpm-${BUILD_NUMBER}' --link mariadb-${BUILD_NUMBER}:mariadb --link memcached-${BUILD_NUMBER}:memcached --network limesurvey-micro-${BUILD_NUMBER} -v limesurvey-micro-data:/var/www/html ${REPO}:${COMMIT}-fpm"
-                        sh "docker run -d --name 'nginx-${BUILD_NUMBER}' --link fpm-${BUILD_NUMBER}:fpm --link memcached-${BUILD_NUMBER}:memcached --network limesurvey-micro-${BUILD_NUMBER} -v limesurvey-micro-data:/var/www/html ${REPO}:${COMMIT}-nginx"
+                        sh "docker run -d --name 'nginx-${BUILD_NUMBER}' --link fpm-${BUILD_NUMBER}:limesurvey --link memcached-${BUILD_NUMBER}:memcached --network limesurvey-micro-${BUILD_NUMBER} -v limesurvey-micro-data:/var/www/html ${REPO}:${COMMIT}-nginx"
                         sleep 10
                         sh "docker logs nginx-${BUILD_NUMBER}"
                         // Get container IDs
