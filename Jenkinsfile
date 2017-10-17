@@ -29,7 +29,7 @@ pipeline {
                 sh 'printenv'
             }
         }
-        stage ('LimeSurvey Web & Application server') {
+        stage ('Docker build Monolith') {
             agent { label 'docker'}
             steps {
                 sh "docker build -f ./Dockerfile -t ${REPO}:${COMMIT} ./"
