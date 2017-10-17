@@ -97,12 +97,9 @@ pipeline {
                         sleep 15
                         // Start Memcached
                         sh "docker run -d --name 'memcached-${BUILD_NUMBER}' --network limesurvey-micro-${BUILD_NUMBER} memcached"
-                        sleep 15
                         // Start application micro-services
                         sh "docker run -d --name 'fpm-${BUILD_NUMBER}' --link mariadb-${BUILD_NUMBER}:mariadb --link memcached-${BUILD_NUMBER}:memcached --network limesurvey-micro-${BUILD_NUMBER} -v limesurvey-micro-data:/var/www/html ${REPO}:${COMMIT}-fpm"
                         sh "docker run -d --name 'nginx-${BUILD_NUMBER}' --link fpm-${BUILD_NUMBER}:limesurvey --link memcached-${BUILD_NUMBER}:memcached --network limesurvey-micro-${BUILD_NUMBER} -v limesurvey-micro-data:/var/www/html ${REPO}:${COMMIT}-nginx"
-                        sleep 10
-                        sh "docker logs nginx-${BUILD_NUMBER}"
                         // Get container IDs
                         script {
                             DOCKER_FPM   = sh(script: "docker ps -qa -f ancestor=${REPO}:${COMMIT}-fpm", returnStdout: true).trim()
@@ -117,10 +114,7 @@ pipeline {
                 stage ('Monolith'){
                     agent { label 'docker' }
                     steps {
-                        sleep 60
-                        // internal
-                        sh "docker exec 'limesurvey-${BUILD_NUMBER}' /bin/bash -c 'curl -i -X GET http://localhost:80'"
-                        // External
+                        sleep 20
                         sh "docker run --rm --network limesurvey-mono-${BUILD_NUMBER} blitznote/debootstrap-amd64:17.04 bash -c 'curl -i -X GET http://${DOCKER_LIME}:80'"
                     }
                     post {
@@ -140,10 +134,8 @@ pipeline {
                 stage ('Micro-Services'){
                     agent { label 'docker'}
                     steps {
-                        sleep 60
-                        // Internal
-                        sh "docker exec nginx-${BUILD_NUMBER} /bin/bash -c 'curl -i -X GET http://localhost:8080'"
-                        // Cross Container
+                        sleep 20
+                        sh "docker logs nginx-${BUILD_NUMBER}"
                         // External
                         sh "docker run --rm --network limesurvey-micro-${BUILD_NUMBER} blitznote/debootstrap-amd64:17.04 bash -c 'curl -i -X GET http://${DOCKER_NGINX}:80'"
                     }
