@@ -137,7 +137,7 @@ pipeline {
                         sleep 20
                         sh "docker logs nginx-${BUILD_NUMBER}"
                         // External
-                        sh "docker run --rm --network limesurvey-micro-${BUILD_NUMBER} blitznote/debootstrap-amd64:17.04 bash -c 'curl -i -X GET http://${DOCKER_NGINX}:80'"
+                        sh "docker run --rm --network limesurvey-micro-${BUILD_NUMBER} blitznote/debootstrap-amd64:17.04 bash -c 'curl -i -X GET http://${DOCKER_NGINX}:8080'"
                     }
                     post {
                         always {
