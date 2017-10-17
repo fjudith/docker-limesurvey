@@ -116,15 +116,15 @@ pipeline {
                     steps {
                         sleep 180 
                         // internal
-                        sh "docker exec 'limesurvey-${BUILD_NUMBER}' /bin/bash -c 'curl -i -X GET http://localhost:8080'"
+                        sh "docker exec 'limesurvey-${BUILD_NUMBER}' /bin/bash -c 'curl -i -X GET http://localhost:80'"
                         // External
-                        sh "docker run --rm --network limesurvey-mono-${BUILD_NUMBER} blitznote/debootstrap-amd64:17.04 bash -c 'curl -i -X GET http://${DOCKER_NGINX}:8080'"
+                        sh "docker run --rm --network limesurvey-mono-${BUILD_NUMBER} blitznote/debootstrap-amd64:17.04 bash -c 'curl -i -X GET http://${DOCKER_LIME}:80'"
                     }
                     post {
                         always {
                             echo 'Remove mono stack'
-                            sh "docker rm -f mariadb-${BUILD_NUMBER}"
                             sh "docker rm -f limesurvey-${BUILD_NUMBER}"
+                            sh "docker rm -f mariadb-${BUILD_NUMBER}"
                             sh "docker network rm limesurvey-mono-${BUILD_NUMBER}"
                         }
                         success {
@@ -146,10 +146,10 @@ pipeline {
                         always {
                             echo 'Remove micro-services stack'
 
-                            sh "docker rm -f mariadb-${BUILD_NUMBER}"
+                            sh "docker rm -f nginx-${BUILD_NUMBER}"
                             sh "docker rm -f fpm-${BUILD_NUMBER}"
                             sh "docker rm -f memcached-${BUILD_NUMBER}"
-                            sh "docker rm -f nginx-${BUILD_NUMBER}"
+                            sh "docker rm -f mariadb-${BUILD_NUMBER}"
                         }
                         success {
                             sh "docker login -u ${DOCKER_PRIVATE_USR} -p ${DOCKER_PRIVATE_PSW} ${PRIVATE_REGISTRY}"
