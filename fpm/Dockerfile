@@ -6,7 +6,7 @@ MAINTAINER Florian JUDITH <florian.judith.b@gmail.com>
 ENV LIMESURVEY_URL=http://download.limesurvey.org/latest-stable-release/limesurvey2.72.2+171017.tar.gz
 
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
+    apt-get install -yqq --no-install-recommends \
     dnsutils \
     netcat \
     crudini \
