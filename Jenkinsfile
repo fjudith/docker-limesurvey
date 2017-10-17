@@ -124,8 +124,7 @@ pipeline {
                         always {
                             echo 'Remove mono stack'
                             sh "docker rm -fv limesurvey-${BUILD_NUMBER}"
-                            sh "docker rm -fv mariadb-${BUILD_NUMBER}"
-                            sleep 10
+                            sh "docker rm -fv mysql-${BUILD_NUMBER}"
                             sh "docker network rm limesurvey-mono-${BUILD_NUMBER}"
                         }
                         success {
@@ -142,6 +141,7 @@ pipeline {
                         sh "docker exec nginx-${BUILD_NUMBER} /bin/bash -c 'curl -i -X GET http://localhost:8080'"
                         // Cross Container
                         // External
+                        sh "docker run --rm --network limesurvey-micro-${BUILD_NUMBER} blitznote/debootstrap-amd64:17.04 bash -c 'curl -i -X GET http://${DOCKER_NGINX}:80'"
                     }
                     post {
                         always {
@@ -151,7 +151,6 @@ pipeline {
                             sh "docker rm -fv fpm-${BUILD_NUMBER}"
                             sh "docker rm -fv memcached-${BUILD_NUMBER}"
                             sh "docker rm -fv mariadb-${BUILD_NUMBER}"
-                            sleep 10
                             sh "docker network rm limesurvey-micro-${BUILD_NUMBER}"
                         }
                         success {
