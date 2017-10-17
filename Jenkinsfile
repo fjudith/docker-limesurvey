@@ -116,7 +116,7 @@ pipeline {
                 stage ('Monolith'){
                     agent { label 'docker' }
                     steps {
-                        sleep 180 
+                        sleep 60
                         // internal
                         sh "docker exec 'limesurvey-${BUILD_NUMBER}' /bin/bash -c 'curl -i -X GET http://localhost:80'"
                         // External
@@ -138,7 +138,7 @@ pipeline {
                 stage ('Micro-Services'){
                     agent { label 'docker'}
                     steps {
-                        sleep 180
+                        sleep 60
                         // Internal
                         sh "docker exec nginx-${BUILD_NUMBER} /bin/bash -c 'curl -i -X GET http://localhost:8080'"
                         // Cross Container
