@@ -125,6 +125,7 @@ pipeline {
                             echo 'Remove mono stack'
                             sh "docker rm -fv limesurvey-${BUILD_NUMBER}"
                             sh "docker rm -fv mariadb-${BUILD_NUMBER}"
+                            sleep 10
                             sh "docker network rm limesurvey-mono-${BUILD_NUMBER}"
                         }
                         success {
@@ -150,6 +151,8 @@ pipeline {
                             sh "docker rm -fv fpm-${BUILD_NUMBER}"
                             sh "docker rm -fv memcached-${BUILD_NUMBER}"
                             sh "docker rm -fv mariadb-${BUILD_NUMBER}"
+                            sleep 10
+                            sh "docker network rm limesurvey-micro-${BUILD_NUMBER}"
                         }
                         success {
                             sh "docker login -u ${DOCKER_PRIVATE_USR} -p ${DOCKER_PRIVATE_PSW} ${PRIVATE_REGISTRY}"
