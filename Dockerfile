@@ -21,7 +21,7 @@ RUN apt-get update && \
 RUN mkdir -p /usr/src/php/ext
 
 # Install needed php extensions: zip
-RUN apt-get install -y libz-dev && \
+RUN apt-get install --no-install-recommends -yqq libz-dev && \
     curl -o zip.tgz -SL http://pecl.php.net/get/zip-1.13.5.tgz && \
     tar -xf zip.tgz -C /usr/src/php/ext/ && \
     rm zip.tgz && \
@@ -29,7 +29,7 @@ RUN apt-get install -y libz-dev && \
     docker-php-ext-install zip
 
 # Install needed php extensions: memcached
-RUN apt-get install -y libmemcached-dev && \
+RUN apt-get install --no-install-recommends -yqq libmemcached-dev && \
     curl -o memcached.tgz -SL http://pecl.php.net/get/memcached-2.2.0.tgz && \
     tar -xf memcached.tgz -C /usr/src/php/ext/ && \
     echo extension=memcached.so >> /usr/local/etc/php/conf.d/memcached.ini && \
@@ -45,21 +45,21 @@ RUN curl -o memcache.tgz -SL http://pecl.php.net/get/memcache-3.0.8.tgz && \
     docker-php-ext-install memcache
 
 # Install needed php extensions: ldap
-RUN apt-get install -y php5-ldap libldap2-dev && \
+RUN apt-get install --no-install-recommends -yqq php5-ldap libldap2-dev && \
     docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/ && \
     docker-php-ext-install ldap
 
 # Install needed php extensions: imap
-RUN apt-get install -y php5-imap libssl-dev libc-client2007e-dev libkrb5-dev && \
+RUN apt-get install --no-install-recommends -yqq php5-imap libssl-dev libc-client2007e-dev libkrb5-dev && \
     docker-php-ext-configure imap --with-imap-ssl --with-kerberos && \
     docker-php-ext-install imap
 
 # Install needed php extensions: bz2 
-RUN apt-get install -y libbz2-dev && \
+RUN apt-get install --no-install-recommends -yqq libbz2-dev && \
     docker-php-ext-install bz2
 
 # Install needed php extensions: gd
-RUN apt-get install --fix-missing -y libfreetype6-dev libpng12-dev libjpeg62-turbo-dev libzip-dev && \
+RUN apt-get install --no-install-recommends --fix-missing -yqq libfreetype6-dev libpng12-dev libjpeg62-turbo-dev libzip-dev && \
     docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ --with-png-dir=/usr/include/  && \
     docker-php-ext-install gd
 
