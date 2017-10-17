@@ -1,24 +1,36 @@
-limesurvey-md:
-  image: mariadb
-  restart: always
-  ports:
-    - "32805:3306"
-  environment:
-    MYSQL_DATABASE: limesurvey
-    MYSQL_ROOT_PASSWORD: V3rY1ns3cur3P4ssw0rd
-    MYSQL_USER: limesurvey
-    MYSQL_PASSWORD: V3rY1ns3cur3P4ssw0rd
-  volumes:
-  - limesurvey-db:/var/lib/mysql
-  - limesurvey-dblog:/var/log/mysql
-  - limeservey-dbetc:/etc/mysql
-
-limesurvey:
-  image: fjudith/limesurvey
-  restart: always
-  ports:
-    - "32705:80"
-  volumes:
-    - limesurvey-upload:/var/www/html/upload
-  links:
-    - limesurvey-md:limesurvey-mariadb
+version: '2'
+services:
+  limesurvey-nginx:
+    image: fjudith/limesurvey:nginx
+    volumes:
+    - limesurvey-data:/var/www/html
+    links:
+    - limesurvey-mc:memcached
+    - limesurvey:limesurvey
+    ports:
+    - 37705:8080/tcp
+    - 37706:8443/tcp
+  limesurvey-md:
+    image: mariadb:10.2
+    environment:
+      MYSQL_DATABASE: limesurvey
+      MYSQL_PASSWORD: V3ry1nS3cur3P4ssW0rd
+      MYSQL_ROOT_PASSWORD: V3ry1nS3cur3P4ssW0rd
+      MYSQL_USER: limesurvey
+    volumes:
+    - limesurvey-db:/var/lib/mysql
+    ports:
+    - 37805:3306/tcp
+  limesurvey-mc:
+    image: memcached
+    stdin_open: true
+    tty: true
+  limesurvey:
+    image: fjudith/limesurvey:fpm
+    environment:
+      MEMCACHE_HOST: memcached
+    volumes:
+    - limesurvey-data:/var/www/html
+    links:
+    - limesurvey-md:mysql
+    - limesurvey-mc:memcached
