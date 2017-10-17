@@ -1,6 +1,6 @@
 FROM php:5.6-apache
 
-MAINTAINER Florian JUDITH <florian.judith.b@gmail.com>
+LABEL maintainer="Florian JUDITH <florian.judith.b@gmail.com>"
 
 ENV LIMESURVEY_URL=http://download.limesurvey.org/latest-stable-release/limesurvey2.72.2+171017.tar.gz
 
