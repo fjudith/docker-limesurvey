@@ -1,6 +1,8 @@
 [![](https://images.microbadger.com/badges/image/fjudith/limesurvey.svg)](https://microbadger.com/images/fjudith/limesurvey "Get your own image badge on microbadger.com")
 [![Build Status](https://travis-ci.org/fjudith/docker-limesurvey.svg?branch=master)](https://travis-ci.org/fjudith/docker-limesurvey)
 
+![Architecture & Distribution](https://github.com/fjudith/docker-limesurvey/raw/master/limesurvey_architecture.png)
+
 # Supported tags and respective Dockerfile links
 
 [`2.72.5`, `latest`](https://github.com/fjudith/docker-limesurvey/tree/2.72.6)
