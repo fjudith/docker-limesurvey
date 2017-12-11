@@ -46,7 +46,7 @@ pipeline {
                 stage ('Limesurvey Nginx'){
                     agent { label 'docker'}
                     steps {
-                        sh "docker build -f fpm/nginx/Dockerfile -t ${REPO}:${COMMIT}-nginx fpm/nginx/"
+                        sh "docker build -f nginx/Dockerfile -t ${REPO}:${COMMIT}-nginx nginx/"
                     }
                     post {
                         success {
