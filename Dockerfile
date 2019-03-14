@@ -2,8 +2,6 @@ FROM amd64/php:7.2-apache
 
 LABEL maintainer="Florian JUDITH <florian.judith.b@gmail.com>"
 
-ENV LIMESURVEY_URL=https://github.com/LimeSurvey/LimeSurvey/archive/2.73.0+171219.tar.gz
-
 RUN mkdir /usr/share/man/man1 && \
     mkdir /usr/share/man/man7
 
@@ -128,6 +126,9 @@ RUN touch /etc/msmtprc && \
 # Clean up
 RUN apt-get clean && \
     rm -r /var/lib/apt/lists/*
+
+ARG LIMESURVEY_URL=https://github.com/LimeSurvey/LimeSurvey/archive/3.15.8+190130.tar.gz
+ENV LIMESURVEY_URL=$LIMESURVEY_URL
 
 # Download and install Limesurvey
 RUN cd /var/www/html \
