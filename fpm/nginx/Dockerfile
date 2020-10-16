@@ -1,20 +1,23 @@
 FROM nginx:stable
 
-# Use it only with "fjudith/limesurvey:fpm" linked as "limesurvey"
-# and "memcached" linked as "memcached"
-# enables 10M max file uploads
+LABEL maintainer="Florian JUDITH <florian.judith.b@gmail.com>"
 
-MAINTAINER Florian JUDITH <florian.judith.b@gmail.com>
+RUN apt-get update -yqq && apt-get install -yqq --no-install-recommends \
+    openssl \
+    certbot \
+    netcat 
 
-COPY nginx.conf /etc/nginx/
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
+RUN rm -f /etc/nginx/conf.d/default.conf
+RUN rm -f /etc/nginx/conf.d/example_ssl.conf
 
-RUN touch /var/run/nginx.pid  && \
-    mkdir -p /var/www/html && \
-    chown -R www-data:www-data /var/www && \
-    chown -R www-data:www-data /var/run/nginx.pid && \
-    chown -R www-data:www-data /var/cache/nginx
+COPY liemsurvey.conf /etc/nginx/conf.d/limesurvey.conf
+COPY nginx.conf /etc/nginx/nginx.conf
+COPY docker-entrypoint.sh /
+RUN chmod +x docker-entrypoint.sh
 
-USER www-data
+EXPOSE 80 443
 
-EXPOSE 8080 8443
+ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD ["nginx"]

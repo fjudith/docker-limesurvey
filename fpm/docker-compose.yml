@@ -19,6 +19,8 @@ services:
     image: memcached
     container_name: memcached
     hostname: memcached
+    expose:
+      - 11211
 
   limesurvey:
     build:
@@ -47,8 +49,7 @@ services:
   nginx:
     image: fjudith/limesurvey:nginx
     ports:
-      - 32706:8443/tcp
-      - 32705:8080/tcp
+      - 80
     depends_on:
       - memcached
       - limesurvey
