@@ -15,13 +15,12 @@ jobs:
   - stage: Build
     env:
       - BASE_IMAGE=apache
-      - HTTP_PORT=50080
     script:
       - pushd  ${BASE_IMAGE}/
       - docker-compose up -d
       - sleep 10
       - docker logs limesurvey
-      - curl -i http://localhost:${HTTP_PORT}
+      - curl -i http://localhost:$(docker-compose port limesurvey 80 | awk -F ':' '{print $2}')
     after_success: 
       - if [[ $TRAVIS_PULL_REQUEST != "false" ]; then
           echo "${DOCKER_PASS}" | docker login -u "${DOCKER_USER}" --password-stdin;
@@ -38,7 +37,7 @@ jobs:
       - sleep 10
       - docker logs limesurvey
       - docker logs nginx
-      - curl -i http://localhost:${HTTP_PORT}
+      - curl -i http://localhost:$(docker-compose port nginx 80 | awk -F ':' '{print $2}')
     after_success: 
       - if [[ $TRAVIS_PULL_REQUEST != "false" ]; then
           echo "${DOCKER_PASS}" | docker login -u "${DOCKER_USER}" --password-stdin;
