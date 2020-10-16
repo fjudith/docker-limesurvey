@@ -15,15 +15,10 @@ services:
     volumes:
       - limesurvey-db:/var/lib/mysql
 
-  memcached:
-    image: memcached
-    container_name: memcached
-    hostname: memcached
-
   limesurvey:
     build:
       context: ./
-    image: fjudith/limesurvey:fpm
+    image: fjudith/limesurvey
     restart: always
     container_name: limesurvey
     hostname: limesurvey
@@ -36,25 +31,13 @@ services:
       SMTP_AUTH: "off"
       MAIL_FROM_DEFAULT: no-reply@example.com
       MAIL_DOMAIN: mail.example.com
-    expose:
-      - 9000
+    ports:
+      - 80
     volumes:
       - limesurvey-upload:/var/www/html/upload
     depends_on:
       - mariadb
-      - memcached
-
-  nginx:
-    image: fjudith/limesurvey:nginx
-    ports:
-      - 32706:8443/tcp
-      - 32705:8080/tcp
-    depends_on:
-      - memcached
-      - limesurvey
 
 volumes:
   limesurvey-db:
   limesurvey-upload:
-  limesurvey-data:
-    

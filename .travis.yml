@@ -3,54 +3,46 @@ env:
   # Docker Repository
   - REPO=fjudith/limesurvey
   # Compute docker tag
-  - TAG=`if [ "${TRAVIS_BRANCH}" == "master" ]; then echo "latest"; else echo ${TRAVIS_BRANCH} ; fi`
-  - FPM=`if [ "${TRAVIS_BRANCH}" == "master" ]; then echo "fpm"; else echo ${TRAVIS_BRANCH}-fpm ; fi`
-  - NGINX=`if [ "${TRAVIS_BRANCH}" == "master" ]; then echo "nginx"; else echo ${TRAVIS_BRANCH}-nginx ; fi`
-  # Retreive commit ID
-  - COMMIT=${TRAVIS_COMMIT::8}
-  - secure: "Lu0uXPy9kxcpjQyMBADPmn3IIZB4UrGjdeVj/CedTj7NQ/Kxl2zHkcP1PA0RYUL9KLtB+ieF+HX3rHk4CmXvEcypqXo7Ll/qmXKbzSirYBU3ipbbdI8f+TEqiG8GNIKcd0lL1kghLzG/iBdTUqOxIGm9Kod/rLipLDatGrLPHvYZm+yGvcRmYLtTMihQFA1VJOw9p5PNQ4tXB25q4NrnDWvrz0MF6etgE7LHOtkw0Mdi1yFuiZTm8fLmvSQ8Cjyc3jLTVXpBwwAN7twWqguGjKFu7KAVqvaVwF0+pHBKt3AE0Yvu0yHygwNsbF76HzHCJghXxsTW+t4NCWM1c2DCCEID32cwWuvYUx3gil5OSj+5RIEQo4pRgLXfc3ZfymvEd19dFTbrkfR1B0XT7bY06YVjbuHIIrD8BlRA9iRxRDnNnQnUGEMLE132N8xDqK/xdXmzQwVddvjXbFn7XCt+c4ZzUY1YHYlfd+Bxw2P8DL+m0B1abarCVUsqx7rfIqvzDqAvuXajW2oxhvfccSEwXLLHS1Fi5kdON87ld8+SpuHHfRZFsgUIWBafPpt1ra2BDwIYNQG1Bweq8MyGAGVdg3MBOaiBg/rZMuDsbbYCcr03tVNYsJ+9qmjytzVeDxCidHErXnKzhG3BITb5j05zHZ0JbpBoNnFHTSo3loLfW58="
-  - secure: "Cr+wnHHNfiwE3rbLZrMJwT4h95civeqenaAQQqb7CIPCTT+7UhDak9Hv2/YM01IhicC1CR3xNS4oK3WpxM9f7KQ7TlAYSmTeOA511lEAsspfLYMTkUkIZonut3IJAFwRuVE/vKZOZa/XQe2ui2u/fK94SSkewSzN1ZmzWoGAUYvTtGaWM05dYeWzfOVk0NzSDNmC+t4Za9ktitrNiwuvuQnXxaVBhSADal1U9OwYcL2cZnBgJ5Q/1gJKl3b5rpyN46Tj+uWOgBFixyTl2/L3T+EK+l7aL545oC/ZrymVZuDytxff/j/K1lCWlGf+0iKZBNoKtxdPrMO3XuaV6hKYBRyCsXGteH7uaYSnedmEf7jrUwwT9C/JHdwUJXatyVc+ihkoCS3youfqVmJ3Hu7Fjt3V+FGAm8Njz7uL13zsUKzaUUtX+ExMkpJgn3lWYoU6vY3EHsjQjT8geuHs8rxMRkrpt8+dScyITvKMZSVdwanZ2xNDT4jsAXYoC6FMkXz7a+hV+42k0Fs8F0ObNxpjbnPmGExzjdXIzApmHtQVrXbFaz5i/6F2Plw34iL0gpu8h/g7LImbnBagI+8ny0YNqvoCYz9Od0gerkKWTqN9acCMt3VgMJmmhkJKJao0lO7L2EboQttq1Abl7KaQ08Y2iN07g3jXApIy3014gTBwYj0="
-  - secure: "fUrNj6/3g/SQcO4AeQ6IUNUSIzb0nt6kWRv0pNJ+avePhU/nhZuoMBmCm2sDeSiFNue6yL6JPT8BQxaNQxF06q9Lw2wZe784ZPM+WpbattpVryL7fj4VzQ+Csf/VB9hTQyteWoQO/1BoXaEuue0QxDgDm//YvudRTm1zfwUjeY9fn5WzGKB4+COkGu/tUP7TZMwtvnhdKrDymUOcDs+yKTE7nRD0820L8J6J4jOGpNq2HQAEUdpYPGQpgudPw5+GMZCs8bRIYjVBAk1KlAwbMhLKad7f72y8S0XgfnhU/9jXNgDd59kKpu+fDmLL5RjWNCtPHJqEkvhaWP4BHo2HJNbc8TQ5fXkJcBqg/z96pMKoIb3zRyhgXc5cPa+9muXP7EPGCRVq/yn6CGI9o8a38nZVjqNFcr2ou49wIK6hAJrWnURF2qkVr2AFO1AAVUPwAN1mgmGaktb816p55CFAtCeOQDYZY9jp4qToKvYlxYtpT80Ol18yAaNbuzNK/S55XZlQq0VM7ThqMuJP7Goz9Crzg6samGYnI/TRVndfVeeoDNkpTOjsxk0AUCZWmAtEkdV1wkdD8zN1yf8/9eI0ndNN5p2HyI++E5TxOQH9Z0NTAHWsKVfjG5YA0Cd+E7vQxh+csIMze995LTLu71GDqxuAn48BewVI3gZkW5p0SSw="
-
+  - TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH ; fi`
+  - FPM_TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "fpm"; else echo $TRAVIS_BRANCH-fpm ; fi`
   
 sudo: required
 services:
   - docker
 
-
-before_install:
-  # Apache build
-  - docker build -f Dockerfile -t $REPO:$COMMIT .
-  - docker run --name='limesurvey-md' -d -e MYSQL_DATABASE=limesurvey -e MYSQL_ROOT_PASSWORD=V3rY1ns3cur3P4ssw0rd -e MYSQL_USER=limesurvey -e MYSQL_PASSWORD=V3rY1ns3cur3P4ssw0rd mariadb
-  - sleep 20
-  - docker run --name 'limesurvey' -d --link limesurvey-md:mysql -p 32701:8080 $REPO:$COMMIT
-  # fpm build
-  - docker build -f fpm/Dockerfile -t $REPO:$COMMIT-fpm fpm/
-  - docker build -f nginx/Dockerfile -t $REPO:$COMMIT-nginx nginx/
-  - docker run --name 'limesurvey-mc' -d memcached
-  - docker run --name 'limesurvey-fpm' -d --link limesurvey-mc:memcached --link limesurvey-md:mysql -e MEMCACHE_HOST=memcached -v limesurvey-data:/var/www/html $REPO:$COMMIT-fpm
-  - docker run --name 'limesurvey-nginx' -d --link limesurvey-mc:memcached --link limesurvey:limesurvey -v limesurvey-data:/var/www/html -p 32702:8080 $REPO:$COMMIT-nginx
-  - docker ps -a
-
-
-script:
-  # Wait for Limesurvey to start
-  - sleep 5
-  - docker logs limesurvey
-  # -i, --include – include protocol headers in the output (H/F)
-  # -X, --request – specify request  COMMAND (GET, PUT, DELETE…)  to use
-  - docker run --rm --link limesurvey:apache phusion/baseimage /bin/bash -c "curl -i -L http://apache"
-  - docker run --rm --link limesurvey-nginx:nginx phusion/baseimage /bin/bash -c "curl -i -L http://nginx:8080"
-
-
-after_success:
-  - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
-  - docker tag $REPO:$COMMIT $REPO:$TAG
-  - docker tag $REPO:$COMMIT $REPO:travis-$TRAVIS_BUILD_NUMBER
-  - docker push $REPO:$TAG
-  - docker tag $REPO:$COMMIT-fpm $REPO:$FPM
-  - docker tag $REPO:$COMMIT-fpm $REPO:travis-$TRAVIS_BUILD_NUMBER-fpm
-  - docker push $REPO:$FPM
-  - docker tag $REPO:$COMMIT-nginx $REPO:$NGINX
-  - docker tag $REPO:$COMMIT-nginx $REPO:travis-$TRAVIS_BUILD_NUMBER
-  - docker push $REPO:$NGINX
+jobs:
+  include:
+  - stage: Build
+    env:
+      - BASE_IMAGE=apache
+      - HTTP_PORT=50080
+    script:
+      - pushd  ${BASE_IMAGE}/
+      - docker-compose up -d
+      - sleep 10
+      - docker logs limesurvey
+      - curl -i http://localhost:${HTTP_PORT}
+    after_success: 
+      - if [[ $TRAVIS_PULL_REQUEST != "false" ]; then
+          echo "${DOCKER_PASS}" | docker login -u "${DOCKER_USER}" --password-stdin;
+          docker tag ${REPO}:latest ${REPO}:${TAG};
+          docker push ${REPO}:${TAG};
+        fi
+  - stage: Build
+    env:
+      - BASE_IMAGE=fpm
+      - HTTP_PORT=58080
+    script:
+      - pushd  ${BASE_IMAGE}/
+      - docker-compose up -d
+      - sleep 10
+      - docker logs limesurvey
+      - docker logs nginx
+      - curl -i http://localhost:${HTTP_PORT}
+    after_success: 
+      - if [[ $TRAVIS_PULL_REQUEST != "false" ]; then
+          echo "${DOCKER_PASS}" | docker login -u "${DOCKER_USER}" --password-stdin;
+          docker tag ${REPO}:fpm ${REPO}:${FPM_TAG};
+          docker push ${REPO}:${FPM_TAG};
+          docker push ${REPO}:nginx;
+        fi

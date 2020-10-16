@@ -3,7 +3,7 @@ FROM amd64/php:7.4-fpm
 
 LABEL maintainer="Florian JUDITH <florian.judith.b@gmail.com>"
 
-ENV LIMESURVEY_URL=https://download.limesurvey.org/lts-releases/limesurvey3.24.1+201014.zip
+ARG LIMESURVEY_URL=https://download.limesurvey.org/lts-releases/limesurvey3.24.1+201014.zip
 
 RUN mkdir /usr/share/man/man1 && \
     mkdir /usr/share/man/man7
@@ -11,7 +11,7 @@ RUN mkdir /usr/share/man/man1 && \
 RUN apt-get update -yqq && \
     apt-get install -yqqf --no-install-recommends \
     postgresql-client \
-    mysql-client \
+    default-mysql-client \
     dnsutils \
     netcat \
     crudini \
@@ -32,12 +32,16 @@ RUN pear install Net_SMTP
 
 # Install needed php extensions: memcached
 #
-RUN apt-get install -y libpq-dev libmemcached-dev && \
-    curl -o memcached.tgz -SL http://pecl.php.net/get/memcached-3.0.3.tgz && \
-        tar -xf memcached.tgz -C /usr/src/php/ext/ && \
-        echo extension=memcached.so >> /usr/local/etc/php/conf.d/memcached.ini && \
-        rm memcached.tgz && \
-        mv /usr/src/php/ext/memcached-3.0.3 /usr/src/php/ext/memcached
+RUN apt-get install -y --no-install-recommends \
+    libpq-dev \
+    libmemcached-dev \
+    zlib1g-dev && \
+    curl -o memcached.tgz -SL http://pecl.php.net/get/memcached-3.1.5.tgz && \
+    tar -xf memcached.tgz -C /usr/src/php/ext/ && \
+    echo extension=memcached.so >> /usr/local/etc/php/conf.d/memcached.ini && \
+    rm memcached.tgz && \
+    mv /usr/src/php/ext/memcached-3.1.5 /usr/src/php/ext/memcached && \
+    docker-php-ext-install memcached
 
 # set recommended PHP.ini settings
 # see https://secure.php.net/manual/en/opcache.installation.php
@@ -52,46 +56,57 @@ RUN { \
 
 # Install needed php extensions: zip
 #
-RUN apt-get install -y libz-dev && \
-    curl -o zip.tgz -SL http://pecl.php.net/get/zip-1.15.1.tgz && \
-        tar -xf zip.tgz -C /usr/src/php/ext/ && \
-        rm zip.tgz && \
-        mv /usr/src/php/ext/zip-1.15.1 /usr/src/php/ext/zip
+RUN apt-get install -yqq --no-install-recommends \
+    libz-dev \
+    libzip-dev && \
+    curl -o zip.tgz -SL http://pecl.php.net/get/zip-1.19.1.tgz && \
+    tar -xf zip.tgz -C /usr/src/php/ext/ && \
+    rm zip.tgz && \
+    mv /usr/src/php/ext/zip-1.19.1 /usr/src/php/ext/zip && \
+    docker-php-ext-install zip
 
 # Install needed php extensions: memcache
 #
-RUN apt-get install --no-install-recommends -y unzip libssl-dev libpcre3 libpcre3-dev && \
-    cd /usr/src/php/ext/ && \
-    curl -sSL -o php7.zip https://github.com/websupport-sk/pecl-memcache/archive/NON_BLOCKING_IO_php7.zip && \
-    unzip php7.zip && \
-    mv pecl-memcache-NON_BLOCKING_IO_php7 memcache && \
-    docker-php-ext-configure memcache --with-php-config=/usr/local/bin/php-config && \
+RUN apt-get install -yqq --no-install-recommends \
+    unzip \
+    libssl-dev \
+    libpcre3 \
+    libpcre3-dev && \
+    curl -o memcache.tgz -SL http://pecl.php.net/get/memcache-4.0.5.2.tgz && \
+    tar -xf memcache.tgz -C /usr/src/php/ext/ && \
+    rm memcache.tgz && \
+    mv /usr/src/php/ext/memcache-4.0.5.2 /usr/src/php/ext/memcache && \
     docker-php-ext-install memcache && \
-    echo "extension=memcache.so" > /usr/local/etc/php/conf.d/ext-memcache.ini && \
-    rm -rf /tmp/pecl-memcache-php7 php7.zip
-
-RUN docker-php-ext-install memcached
-RUN docker-php-ext-install memcache
-RUN docker-php-ext-install zip
+    echo "extension=memcache.so" > /usr/local/etc/php/conf.d/ext-memcache.ini
 
 # Install needed php extensions: ldap
 #
-RUN apt-get install libldap2-dev -y && \
+RUN apt-get install -yqq --no-install-recommends \
+    libldap2-dev && \
     docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/ && \
-docker-php-ext-install ldap
+    docker-php-ext-install ldap
 
 # Install needed php extensions: imap
-RUN apt-get install --no-install-recommends -yqq libssl-dev libc-client2007e-dev libkrb5-dev && \
+RUN apt-get install -yqq --no-install-recommends \
+    libssl-dev \
+    libc-client2007e-dev \
+    libkrb5-dev && \
     docker-php-ext-configure imap --with-imap-ssl --with-kerberos && \
     docker-php-ext-install imap
 
 # Install needed php extensions: bz2 
-RUN apt-get install --no-install-recommends -yqq libbz2-dev && \
+RUN apt-get install -yqq --no-install-recommends \
+    libbz2-dev && \
     docker-php-ext-install bz2
 
 # Install needed php extensions: gd
-RUN apt-get install --no-install-recommends --fix-missing -yqq libfreetype6-dev libpng-dev libjpeg-dev libjpeg62-turbo-dev libzip-dev && \
-    docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ --with-png-dir=/usr/include/  && \
+RUN apt-get install -yqq --no-install-recommends --fix-missing \
+    libfreetype6-dev \
+    libpng-dev \
+    libjpeg-dev \
+    libjpeg62-turbo-dev \
+    libzip-dev && \
+    docker-php-ext-configure gd && \
     docker-php-ext-install gd
 
 # Install needed php extensions: mysql
@@ -104,11 +119,11 @@ RUN docker-php-ext-install pdo_pgsql
 
 # Install needed php extensions: mcrypt
 RUN apt-get install -y libmcrypt-dev && \
-    curl -o mcrypt.tgz -SL http://pecl.php.net/get/mcrypt-1.0.1.tgz && \
-        tar -xf mcrypt.tgz -C /usr/src/php/ext/ && \
-        rm mcrypt.tgz && \
-        mv /usr/src/php/ext/mcrypt-1.0.1 /usr/src/php/ext/mcrypt && \
-        docker-php-ext-install mcrypt
+    curl -o mcrypt.tgz -SL http://pecl.php.net/get/mcrypt-1.0.3.tgz && \
+    tar -xf mcrypt.tgz -C /usr/src/php/ext/ && \
+    rm mcrypt.tgz && \
+    mv /usr/src/php/ext/mcrypt-1.0.3 /usr/src/php/ext/mcrypt && \
+    docker-php-ext-install mcrypt
 
 # Install needed php extensions: imagick
 RUN apt-get install --no-install-recommends --fix-missing -yqq libmagickwand-dev && \
@@ -127,13 +142,15 @@ RUN touch /etc/msmtprc && \
     crudini --set /usr/local/etc/php/php.ini "mail function" "sendmail_path" "'/usr/bin/msmtp -t'"
 
 # Clean up
-RUN apt-get clean && \
+RUN apt-get autoremove -y --purge && \
+    apt-get clean && \
     rm -r /var/lib/apt/lists/*
 
 # Download and install Limesurvey
-RUN cd /var/www/html && \
-    curl -L -o limesurvey.zip $LIMESURVEY_URL && \
-    unzip limesurvey.zip limesurvey/*
+RUN curl -L -o limesurvey.zip $LIMESURVEY_URL && \
+    unzip limesurvey.zip -d /var/www/html && \
+    mv /var/www/html/limesurvey/* /var/www/html/ && \
+    rm -rf limesurvey limesurvey.zip
 
 # Change owner for security reasons
 RUN chown -R www-data:www-data /var/www/html/*
@@ -144,7 +161,7 @@ RUN chmod +x /docker-entrypoint.sh
 
 VOLUME /var/www/html/upload
 
-EXPOSE 80
+EXPOSE 9000
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["php-fpm"]
