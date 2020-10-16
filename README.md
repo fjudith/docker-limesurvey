@@ -5,7 +5,8 @@
 
 # Supported tags and respective Dockerfile links
 
-[`2.73.0`, `latest`](https://github.com/fjudith/docker-limesurvey/tree/2.73.0)
+[`3.24.1`, `latest`](https://github.com/fjudith/docker-limesurvey/tree/3.24.1)
+[`2.73.0`](https://github.com/fjudith/docker-limesurvey/tree/2.73.0)
 [`2.73.0-fpm`](https://github.com/fjudith/docker-limesurvey/tree/2.73.0/fpm)
 [`2.72.5`](https://github.com/fjudith/docker-limesurvey/tree/2.72.5)
 [`2.72.5-fpm`](https://github.com/fjudith/docker-limesurvey/tree/2.72.5/fpm)

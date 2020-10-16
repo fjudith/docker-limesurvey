@@ -1,14 +1,14 @@
 
-FROM amd64/php:7.2-fpm
+FROM amd64/php:7.4-fpm
 
 LABEL maintainer="Florian JUDITH <florian.judith.b@gmail.com>"
 
-ENV LIMESURVEY_URL=https://github.com/LimeSurvey/LimeSurvey/archive/2.73.0+171219.tar.gz
+ENV LIMESURVEY_URL=https://download.limesurvey.org/lts-releases/limesurvey3.24.1+201014.zip
 
 RUN mkdir /usr/share/man/man1 && \
     mkdir /usr/share/man/man7
 
-RUN apt-get update && \
+RUN apt-get update -yqq && \
     apt-get install -yqqf --no-install-recommends \
     postgresql-client \
     mysql-client \
@@ -131,8 +131,9 @@ RUN apt-get clean && \
     rm -r /var/lib/apt/lists/*
 
 # Download and install Limesurvey
-RUN cd /var/www/html \
-    && curl -L $LIMESURVEY_URL | tar xvz --strip-components=1
+RUN cd /var/www/html && \
+    curl -L -o limesurvey.zip $LIMESURVEY_URL && \
+    unzip limesurvey.zip limesurvey/*
 
 # Change owner for security reasons
 RUN chown -R www-data:www-data /var/www/html/*
