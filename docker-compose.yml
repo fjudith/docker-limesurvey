@@ -1,5 +1,5 @@
 version: '2'
-services:
+services:  
   limesurvey-nginx:
     image: fjudith/limesurvey:nginx
     volumes:
@@ -34,3 +34,8 @@ services:
     links:
     - limesurvey-md:mysql
     - limesurvey-mc:memcached
+
+volumes:
+  limesurvey-data:
+  limesurvey-db:
+  limesurvey-upload:
