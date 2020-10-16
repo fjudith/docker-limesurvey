@@ -120,6 +120,7 @@ You can use docker compose to automate the above command if you create a file ca
 Runs inside apache.
 
 ```yaml
+version: '2'
 limesurvey-md:
   image: mariadb
   restart: always
