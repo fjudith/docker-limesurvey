@@ -22,10 +22,11 @@ jobs:
       - docker logs limesurvey
       - curl -i http://localhost:$(docker-compose port limesurvey 80 | awk -F ':' '{print $2}')
     after_success: 
-      - if [[ $TRAVIS_PULL_REQUEST != "false" ]; then
-          echo "${DOCKER_PASS}" | docker login -u "${DOCKER_USER}" --password-stdin;
-          docker tag ${REPO}:latest ${REPO}:${TAG};
-          docker push ${REPO}:${TAG};
+      - |
+        if [[ $TRAVIS_PULL_REQUEST != "false" ]; then
+          echo "${DOCKER_PASS}" | docker login -u "${DOCKER_USER}" --password-stdin
+          docker tag ${REPO}:latest ${REPO}:${TAG}
+          docker push ${REPO}:${TAG}
         fi
   - stage: Build
     env:
@@ -38,9 +39,10 @@ jobs:
       - docker logs nginx
       - curl -i http://localhost:$(docker-compose port nginx 8080 | awk -F ':' '{print $2}')
     after_success: 
-      - if [[ $TRAVIS_PULL_REQUEST != "false" ]; then
-          echo "${DOCKER_PASS}" | docker login -u "${DOCKER_USER}" --password-stdin;
-          docker tag ${REPO}:fpm ${REPO}:${FPM_TAG};
-          docker push ${REPO}:${FPM_TAG};
-          docker push ${REPO}:nginx;
+      - |
+        if [[ $TRAVIS_PULL_REQUEST != "false" ]; then
+          echo "${DOCKER_PASS}" | docker login -u "${DOCKER_USER}" --password-stdin
+          docker tag ${REPO}:fpm ${REPO}:${FPM_TAG}
+          docker push ${REPO}:${FPM_TAG}
+          docker push ${REPO}:nginx
         fi
