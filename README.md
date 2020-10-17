@@ -148,62 +148,7 @@ limesurvey:
 
 Runs inside `php-fpm` linked to `memchaced` and `nginx` external containers.
 
-```yaml
-limesurvey-md:
-  image: mariadb
-  restart: always
-  ports:
-    - "32805:3306"
-  environment:
-    MYSQL_DATABASE: limesurvey
-    MYSQL_ROOT_PASSWORD: V3rY1ns3cur3P4ssw0rd
-    MYSQL_USER: limesurvey
-    MYSQL_PASSWORD: V3rY1ns3cur3P4ssw0rd
-  volumes:
-    - limesurvey-db:/var/lib/mysql
-    - limesurvey-dblog:/var/log/mysql
-    - limeservey-dbetc:/etc/mysql
-
-limesurvey-mc:
-  image: memcached
-
-limesurvey:
-  image: fjudith/limesurvey:fpm
-  restart: always
-  environement:
-    MEMCACHED_HOST: memcached
-    PUBLIC_URL: http://survey.example.loc
-    SMTP_HOST: smtp.example.com
-    SMTP_TLS: on
-    SMTP_PORT: 465
-    SMTP_AUTH: off
-    MAIL_FROM_DEFAULT: no-reply@example.com
-    MAIL_DOMAIN: mail.example.com
-  volumes:
-    - limesurvey-upload:/var/www/html/upload
-  links:
-    - limesurvey-md:mysql
-    - limesruvey-pc:memcached
-
-limesurvey-nginx:
-  image: fjudith/limesurvey:nginx
-  ports:
-    - 32706:8443/tcp
-    - 32705:8080/tcp
-  links:
-    - limesurvey-mc:memcached
-    - limesurvey:limesurvey
-  volumes:
-    - limesurvey-data:/var/www/html
-    - limesurvey-nginx-config:/etc/nginx
-    - limesurvey-nginx-log:/var/log/nginx
-```
-
-And run:
-
-```bash
-docker-compose up -d
-```
+[docker-compose](./fpm/docker-compose.yml)
 
 # References
 

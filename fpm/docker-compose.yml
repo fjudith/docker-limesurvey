@@ -41,15 +41,19 @@ services:
     expose:
       - 9000
     volumes:
-      - limesurvey-upload:/var/www/html/upload
+      - limesurvey-upload:/var/www/html:rw
     depends_on:
       - mariadb
       - memcached
 
   nginx:
     image: fjudith/limesurvey:nginx
+    container_name: nginx
+    hostname: nginx
     ports:
-      - 80
+      - 8080
+    volumes:
+      - limesurvey-upload:/var/www/html:rw
     depends_on:
       - memcached
       - limesurvey
